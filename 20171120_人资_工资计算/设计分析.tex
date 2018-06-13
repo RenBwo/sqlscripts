@@ -1,0 +1,69 @@
+% Created 2017-12-06 三 16:38
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\author{sirius}
+\date{\today}
+\title{设计分析}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs 25.3.2 (Org mode 8.2.10)}}
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\section{}
+\label{sec-1}
+\section{主要问题}
+\label{sec-2}
+\subsection{1.工资类型}
+\label{sec-2-1}
+工资根据人员可以分为行政人员 计件人员 参照行政管理的人员 车间管理者
+根据计算方法,可以分为计时工资$\backslash$计件工资$\backslash$系数工资
+\subsection{2.税前工资构成}
+\label{sec-2-2}
+\subsubsection{2.1 行政人员工资=计时基本工资+奖项-扣减项}
+\label{sec-2-2-1}
+计时基本工资: 根据出勤计时*工资计算标准
+奖项:   需要计入税前工资的奖励部分
+扣减项: 需要计入税前工资的扣减部分
+\subsubsection{2.2 计件人员工资=计件基本工资+计时基本工资+奖项-扣减项}
+\label{sec-2-2-2}
+计件基本工资:ERP计件工资数据引入,手工EXCE整理的计件工资数据
+计时基本工资:计件人员有一部分按计时计算的工资
+奖项:   需要计入工资的增加项
+扣减项: 需要计入工资的扣减项
+
+\subsubsection{2.3 车间管理者工资=本部门平均工资*系数+奖项-扣减项}
+\label{sec-2-2-3}
+系数:根据绩效考核确定的系数
+\subsection{3.计算方法}
+\label{sec-2-3}
+\subsubsection{非系数人员工资计算公式}
+\label{sec-2-3-1}
+\subsubsection{系数工资人员计算公式}
+\label{sec-2-3-2}
+\subsection{4.操作说明}
+\label{sec-2-4}
+\subsubsection{部门 与人员 信息维护,包括部门与人员的变动,工资类型$\backslash$所属部门$\backslash$职务$\backslash$职等$\backslash$特殊工龄$\backslash$}
+\label{sec-2-4-1}
+\subsubsection{工资计算常量设置,包括}
+\label{sec-2-4-2}
+% Emacs 25.3.2 (Org mode 8.2.10)
+\end{document}

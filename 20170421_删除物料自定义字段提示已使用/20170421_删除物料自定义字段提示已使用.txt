@@ -1,0 +1,2 @@
+IF EXISTS(SELECT 1 FROM SysObjects WHERE name='ICClassTableInfo' AND xtype ='U')
+SELECT top 1 1 FROM ICClassTableInfo WHERE FSRCTableName = 't_ICItem' AND (FDspFieldName = 'F_104' or FFNDFieldName = 'F_104')

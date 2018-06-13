@@ -1,0 +1,3 @@
+1、vb开发老单插件 wash.vbp,washverify.cls
+2、修改事务类型 update ictransactiontype set fcheckpro=fcheckpro+'|redevclientobj:wash.washverify where fname like '生产任务单'
+3、k3bos ，生产任务单的插件管理里选择相应的插件

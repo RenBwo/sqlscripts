@@ -1,0 +1,44 @@
+
+/*
+* AUTHOR:		RENBO
+* DATE:			2017/12/06
+* DESCRIPTIONS:		
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+*/
+alter TRIGGER trig_t_pa_xishuact_update 
+   ON  t_pa_xishuactual   AFTER update
+   AS 
+BEGIN
+	SET NOCOUNT ON;
+	/*average wage
+	*/
+	select a.fnumber,f.fpa1172 as fyear,f.fpa1173 as fmonth
+	,c.fassessval as frate
+	,sum(f.FPA1161) as wagesum
+	,count(*) as personSum
+			
+			INTO #ratePayStand
+	from	inserted    d 
+	join	t_pa_xishuactentry c on c.fid = d.fid
+	join	t_pa_xishu			a  on a.femp= c.femp and a.fclosedate > getdate()
+	join	t_pa_xishuentry b on a.fid = b.fid 
+	join	t_pa_personal   e on e.f_102=b.fworkGRname  and (e.fpositionindex = 13 or e.fpositionindex = 14)
+	join	t_panewdata		f on f.fempid = e.fitemid  and f.fpa1172=convert(int,left(d.fperiod,4)) and f.fpa1173 = convert(int,right(d.fperiod,2))
+	group by a.fnumber,f.fpa1172,f.fpa1173,c.fassessval
+	
+	/*update t_personal*/
+	update t_pa_personal set f_106 = 0,f_105 = 0  where f_111 like '%系数%'
+	
+	update t_pa_personal set a.f_106 = round(b.frate*b.wagesum/b.personsum,4)
+	from t_pa_personal a 
+	join t_pa_item c on a.fitemid = c.fitemid
+	join #ratepaystand b on b.fnumber = c.fnumber
+	where a.f_111 like '%系数%'
+
+	drop table #ratepaystand 
+
+end
+	

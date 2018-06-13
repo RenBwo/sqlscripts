@@ -1,0 +1,10 @@
+1.收款单的客户订单编号设为必填项
+2.销售出库单必须选择发货通知单为源单,发货通知单必须选择销售订单为源单,才能通过系统原有的单据转换带出客户订单编号.
+3.在合同应收单据头\销售订单单据体\发货通知单单据体\销售出库单据体上新增加字段"客户订单编号"
+4.销售出库单表头增加"发货条件",表体增加"客户订单号","合同金额","已付金额","%".
+5.作合同应收到销售订单的单据转换,携带客户订单编号,
+  修改seorderentry_computer1 
+6.作销售订单(老)到发货通知单(老)的单据转换,携带客户订单编号,这个转换是老单转老单,而且是单据体与单据体之间的转换转换,在BOS里实现(
+isert into icsellbills(fid,ffieldname,fdstctlfield,fseltype,fdk,fcolname,fname,ftablename,ftablealias,frob,fallowedited) select distinct fid,ffiledname,'fentryselfs0249',fseltype,fdk,'fheadselfs0158','fheadselfs0158',ftablename,ftablealias,frob,fallowedited from icselbills where fid = 's02' and fseltype = 0 and ftablename like 'seorder' )
+7.作发货通知单(老)到销售出库(老)的单据转换,携带客户订单编号,这个同样是老单之间 新增自定义字段的 转换,但是是单据体与单据体之间的转换,在BOS里可以实现
+8.开发销售出库单的插件,根据销售出库单表体的"客户订单编号",计算同一"客户订单编号"的合同的合计金额,收款单上同一"客户订单编号"的已付金额合计,二者相比得到已收比率

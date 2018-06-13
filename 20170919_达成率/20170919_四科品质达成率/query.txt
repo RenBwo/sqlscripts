@@ -1,0 +1,3 @@
+SET NOCOUNT ON
+
+EXEC ICMO_quality_DCL_4K  '********', '########'

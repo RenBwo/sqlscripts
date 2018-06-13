@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test" id="review-definitions">
+  <process id="activitiReview" name="销售费用控制流程_预付" isExecutable="true">
+    <startEvent id="start" activiti:formKey="wf:submitReviewTask"></startEvent>
+    <sequenceFlow id="flow1" name="预付" sourceRef="start" targetRef="reviewTask"></sequenceFlow>
+    <userTask id="reviewTask" name="销售出库单" activiti:assignee="${bpm_assignee.properties.userName}" activiti:formKey="wf:activitiReviewTask">
+      <extensionElements>
+        <activiti:taskListener event="create" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+          <activiti:field name="script">
+            <activiti:string><![CDATA[if (typeof bpm_workflowDueDate != 'undefined') task.setVariableLocal('bpm_dueDate', bpm_workflowDueDate);
+                        if (typeof bpm_workflowPriority != 'undefined') task.priority = bpm_workflowPriority;]]></activiti:string>
+          </activiti:field>
+        </activiti:taskListener>
+        <activiti:taskListener event="complete" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+          <activiti:field name="script">
+            <activiti:string><![CDATA[execution.setVariable('wf_reviewOutcome', task.getVariable('wf_reviewOutcome'));]]></activiti:string>
+          </activiti:field>
+        </activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="usertask1" name="下推付款申请单"></userTask>
+    <sequenceFlow id="flow2" name="  1" sourceRef="reviewTask" targetRef="usertask1"></sequenceFlow>
+    <userTask id="usertask2" name="审核付款申请单"></userTask>
+    <sequenceFlow id="flow3" name="  1" sourceRef="usertask1" targetRef="usertask2"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway1" name="校验"></exclusiveGateway>
+    <sequenceFlow id="flow4" sourceRef="usertask2" targetRef="exclusivegateway1"></sequenceFlow>
+    <userTask id="usertask3" name="生成付款单"></userTask>
+    <sequenceFlow id="flow5" sourceRef="exclusivegateway1" targetRef="usertask3"></sequenceFlow>
+    <userTask id="usertask4" name="下推 费用发票"></userTask>
+    <sequenceFlow id="flow6" name="  2" sourceRef="reviewTask" targetRef="usertask4"></sequenceFlow>
+    <endEvent id="endevent1" name=" NG"></endEvent>
+    <sequenceFlow id="flow8" name=" No" sourceRef="exclusivegateway1" targetRef="endevent1"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
+    <userTask id="usertask5" name="其它应付单"></userTask>
+    <sequenceFlow id="flow10" name=" Yes" sourceRef="exclusivegateway2" targetRef="usertask5"></sequenceFlow>
+    <userTask id="usertask6" name="审核费用发票"></userTask>
+    <sequenceFlow id="flow11" name="  2" sourceRef="usertask4" targetRef="usertask6"></sequenceFlow>
+    <sequenceFlow id="flow12" name="  2" sourceRef="usertask6" targetRef="exclusivegateway2"></sequenceFlow>
+    <endEvent id="endevent2" name="End"></endEvent>
+    <sequenceFlow id="flow13" name=" No" sourceRef="exclusivegateway2" targetRef="endevent2"></sequenceFlow>
+    <userTask id="usertask7" name="下推 付款申请单"></userTask>
+    <sequenceFlow id="flow14" name=" 2" sourceRef="usertask5" targetRef="usertask7"></sequenceFlow>
+    <sequenceFlow id="flow15" name="  2" sourceRef="usertask7" targetRef="usertask2"></sequenceFlow>
+    <textAnnotation id="textannotation1">
+      <text>外贸：提单号;
+内贸：运单号，审核后用插件进行修改</text>
+    </textAnnotation>
+    <textAnnotation id="textannotation2">
+      <text>提单号or运单号： 下推时携带
+金额：手工输入
+付款项目：F7选择</text>
+    </textAnnotation>
+    <textAnnotation id="textannotation3">
+      <text>同一运单/提单号 &amp;&amp; 同一付款项目 &amp;&amp; 付款单操作 
+只能出现一次</text>
+    </textAnnotation>
+    <textAnnotation id="textannotation4">
+      <text>同一运单/提单号 &amp;&amp; 同一付款项目 &amp;&amp; 费用发票操作 
+只能出现一次</text>
+    </textAnnotation>
+    <textAnnotation id="textannotation5">
+      <text>提单号or运单号： 下推时携带
+金额：手工输入
+付款项目：F7选择</text>
+    </textAnnotation>
+    <textAnnotation id="textannotation6">
+      <text>提单号or运单号： 下推时携带
+金额：下推时携带
+付款项目：下推时携带</text>
+    </textAnnotation>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_activitiReview">
+    <bpmndi:BPMNPlane bpmnElement="activitiReview" id="BPMNPlane_activitiReview">
+      <bpmndi:BPMNShape bpmnElement="start" id="BPMNShape_start">
+        <omgdc:Bounds height="35.0" width="35.0" x="134.0" y="30.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="reviewTask" id="BPMNShape_reviewTask">
+        <omgdc:Bounds height="55.0" width="105.0" x="99.0" y="130.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="99.0" y="679.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask2" id="BPMNShape_usertask2">
+        <omgdc:Bounds height="55.0" width="105.0" x="99.0" y="782.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="131.0" y="895.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask3" id="BPMNShape_usertask3">
+        <omgdc:Bounds height="55.0" width="105.0" x="99.0" y="972.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask4" id="BPMNShape_usertask4">
+        <omgdc:Bounds height="55.0" width="105.0" x="500.0" y="281.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="50.0" y="898.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
+        <omgdc:Bounds height="41.0" width="105.0" x="532.0" y="453.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask5" id="BPMNShape_usertask5">
+        <omgdc:Bounds height="55.0" width="105.0" x="500.0" y="530.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask6" id="BPMNShape_usertask6">
+        <omgdc:Bounds height="55.0" width="105.0" x="500.0" y="366.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent2" id="BPMNShape_endevent2">
+        <omgdc:Bounds height="35.0" width="35.0" x="740.0" y="540.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask7" id="BPMNShape_usertask7">
+        <omgdc:Bounds height="55.0" width="105.0" x="500.0" y="679.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation1" id="BPMNShape_textannotation1">
+        <omgdc:Bounds height="50.0" width="261.0" x="220.0" y="133.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation2" id="BPMNShape_textannotation2">
+        <omgdc:Bounds height="50.0" width="261.0" x="230.0" y="682.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation3" id="BPMNShape_textannotation3">
+        <omgdc:Bounds height="51.0" width="261.0" x="230.0" y="890.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation4" id="BPMNShape_textannotation4">
+        <omgdc:Bounds height="50.0" width="321.0" x="640.0" y="449.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation5" id="BPMNShape_textannotation5">
+        <omgdc:Bounds height="50.0" width="261.0" x="640.0" y="290.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation6" id="BPMNShape_textannotation6">
+        <omgdc:Bounds height="52.0" width="271.0" x="640.0" y="680.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="151.0" y="65.0"></omgdi:waypoint>
+        <omgdi:waypoint x="151.0" y="130.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="151.0" y="79.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="151.0" y="185.0"></omgdi:waypoint>
+        <omgdi:waypoint x="151.0" y="679.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="12.0" width="100.0" x="151.0" y="497.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="151.0" y="734.0"></omgdi:waypoint>
+        <omgdi:waypoint x="151.0" y="782.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="12.0" width="100.0" x="151.0" y="748.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="151.0" y="837.0"></omgdi:waypoint>
+        <omgdi:waypoint x="151.0" y="895.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="151.0" y="935.0"></omgdi:waypoint>
+        <omgdi:waypoint x="151.0" y="972.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="151.0" y="185.0"></omgdi:waypoint>
+        <omgdi:waypoint x="179.0" y="211.0"></omgdi:waypoint>
+        <omgdi:waypoint x="553.0" y="211.0"></omgdi:waypoint>
+        <omgdi:waypoint x="552.0" y="281.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="12.0" width="100.0" x="345.0" y="199.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="131.0" y="915.0"></omgdi:waypoint>
+        <omgdi:waypoint x="85.0" y="915.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="12.0" width="100.0" x="103.0" y="898.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="584.0" y="494.0"></omgdi:waypoint>
+        <omgdi:waypoint x="552.0" y="530.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="12.0" width="100.0" x="559.0" y="498.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="552.0" y="336.0"></omgdi:waypoint>
+        <omgdi:waypoint x="552.0" y="366.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="12.0" width="100.0" x="551.0" y="338.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="552.0" y="421.0"></omgdi:waypoint>
+        <omgdi:waypoint x="584.0" y="453.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="12.0" width="100.0" x="552.0" y="421.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+        <omgdi:waypoint x="637.0" y="473.0"></omgdi:waypoint>
+        <omgdi:waypoint x="631.0" y="473.0"></omgdi:waypoint>
+        <omgdi:waypoint x="631.0" y="516.0"></omgdi:waypoint>
+        <omgdi:waypoint x="631.0" y="557.0"></omgdi:waypoint>
+        <omgdi:waypoint x="740.0" y="557.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="12.0" width="100.0" x="620.0" y="519.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+        <omgdi:waypoint x="552.0" y="585.0"></omgdi:waypoint>
+        <omgdi:waypoint x="552.0" y="679.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="12.0" width="100.0" x="551.0" y="619.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
+        <omgdi:waypoint x="552.0" y="734.0"></omgdi:waypoint>
+        <omgdi:waypoint x="552.0" y="810.0"></omgdi:waypoint>
+        <omgdi:waypoint x="204.0" y="809.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="12.0" width="100.0" x="360.0" y="789.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

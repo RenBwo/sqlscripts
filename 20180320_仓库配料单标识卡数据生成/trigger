@@ -1,0 +1,47 @@
+/* 
+ * date:		2018/03/20
+ * author:		renbo
+ * description:	生成仓库打印配料标识卡的 billerid in (16615 16585) 段建亭 李丹丹
+ * DESCRIPTION:	use AIS20161026113020
+ * drop trigger trig_icstockbill_outbillidcard
+ */
+create trigger trig_icstockbill_outbillidcard on icstockbill for update
+as 
+begin
+
+if update(fstatus) and 
+(select fstatus from inserted where ftrantype = 24 and fbillerid in (16615, 16585)) = 0 and 
+(select fstatus from deleted where ftrantype = 24 and fbillerid in (16615 ,16585)) = 1
+begin
+	delete  t_bos200000019 from  t_bos200000019 a join inserted b on a.foutbillno = b.fbillno 
+end 
+
+
+if update(fstatus) and (select fstatus from inserted where ftrantype = 24 and fbillerid in (16615 ,16585) ) =1
+begin
+declare @fid int,@count int,@i int
+declare @fbillno varchar(50)
+
+select row_number() over(order by b.fitemid) as fsn, a.fbillno,b.fentryselfb0447 as fgzl,sum(b.fqty) as fqty,b.fitemid,b.funitid
+into #t_temp 
+from inserted  a join icstockbillentry b on a.finterid = b.finterid  
+group by a.fbillno,b.fentryselfb0447,b.fitemid,b.funitid
+
+select @count = count(*),@i = 1 from #t_temp 
+if @count > 0 
+begin
+delete  t_bos200000019 from  t_bos200000019 a join inserted  b on a.foutbillno = b.fbillno 
+end
+while @i < @count+1 
+begin
+select @fid = max(fid) from  t_bos200000019 
+insert into  t_bos200000019(fid,fclasstypeid,fbillno,foutbillno,fgzl,fqty,fnumber,funit,fdate)
+select isnull(@fid,0)+1,200000019,fbillno+convert(varchar(6),@i),fbillno,fgzl,fqty,fitemid,funitid ,getdate()
+from #t_temp
+where fsn = @i
+select @i=@i+1
+end
+drop table #t_temp 
+end
+end
+

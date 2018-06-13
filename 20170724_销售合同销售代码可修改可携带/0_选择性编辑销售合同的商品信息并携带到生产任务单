@@ -1,0 +1,71 @@
+<--!date:20170727 -- author:renbwo -->
+[TITLE]
+选择性编辑销售合同的商品信息并携带到生产任务单
+[环境]
+kbos，sqlserver2008,EclipseDSE，测试库700 ais2010714081229
+[字典]
+商品代码------客户对应物料代码，		来源：客户对应物料表
+商品名称------客户对应物料名称，		来源：客户对应物料表
+产品代码------工厂加工时使用的代码，  	来源:物料表
+产品名称------工厂加工时使用的名称，  	来源:物料表
+[变更前的问题]
+商品代码和名称全部从后台取客户对应物料表的数据.
+一个产品代码对应多个商品代码的情况，如此表示：goodscode01/goodscode006 ------01.01.01.
+不能对商品信息进行准确区分（goodscode01？goodscode006？）,对包装和发货、客户方造成困扰。
+[变更的目的]
+在自动取数据的基础上，对商品代码 和 商品名称进行可选择性得编辑，准确区分商品信息。
+[步骤]
+1、销售合同 ：加上开关字段，如果打开，就不从客户物料对应表里取商品代码和名称。开关默认是关闭状态，所以就一次插入时，会自取商品代码和名称。
+BOS：
+1.1、增加开关字段 rpcontractentry.fenableedit default N
+1.2、客户对应物料代码 名称 锁定状态 从-1改成24
+1.3、save
+SQL：
+1.4
+触发器 if fenableedit = 1 then keep else select from imapitemsupplier
+code:
+ alter TRIGGER [dbo].[t_rpContractEntry_change1]
+            ON [dbo].[t_rpContractEntry]
+……
+UPDATE t_rpContractEntry
+SET FCusItemNo1=(case  when (fenableedit=true or fenableedit=1 ) then @FCusItemNo0 else @FCusItemNo1 end) 		/*if fenableedit is true ,don't modify*/
+ ,FCusItemName1=(case when (fenableedit=true or fenableedit=1 )  then @FCusItemName0 else @FCusItemName1 end)	/*if fenableedit is true ,don't modify*/
+WHERE FDetailID=@FDetailID
+code end;
+BOS：
+1.5、销售合同 单据转换 （老）销售订单
+list：
+合同.客户对应代码 -- 客户对应代码 s0180
+合同.客户对应名称 -- 客户对应名称 s0192
+SQL：
+2、销售订单触发器 
+Code:
+ALTER TRIGGER [dbo].[SEOrder_InsertUpdate] 
+   ON  [dbo].[SEOrder]
+   AFTER INSERT,UPDATE……
+/*
+---由销售合同下推或手工录入的销售订单，其中客户对应物料代码都由客户对应物料表中数据关联  曲军提出 2015-07-01
+UPDATE SEOrderEntry
+SET FEntrySelfS0180= ISNULL(D.FMapNumber,''),FEntrySelfS0192=ISNULL(D.FMapName,'')
+FROM INSERTED a
+INNER JOIN SEOrderEntry B ON A.FInterID =B.FInterID 			
+LEFT OUTER JOIN ICItemMapping D on D.FItemID =b.FItemID and D.FCompanyID =a.FCustID AND D.FPropertyID =1
+         */	
+code end
+3、外挂.修改销售合同
+alter PROCEDURE [dbo].[SEOrderEntry_Computer1] 
+…… 原来已经有客户代码 fentryselfs0180，这次增加了客户对应名称 FEntrySelfS0192
+
+4、销售订单 单据转换 生产任务单 edittablelink.sql
+
+5、修改生产任务单的触发器
+alter TRIGGER  [dbo].[ICMO_INSERT]  ON [dbo].[ICMO]
+……
+fheadselfj0192\0193 anotate
+BOS：
+6、修改生产任务单批量录入对应关系
+6.1、增加字段 客户对应商品代码 FcustGoodsNum
+    增加字段 客户对应商品名称 fcustomgoodsname
+    save
+6.2、销售订单 到 生产任务批量维护 的单据转换
+     生产任务单 到 生产任务批量维护 的单据转换

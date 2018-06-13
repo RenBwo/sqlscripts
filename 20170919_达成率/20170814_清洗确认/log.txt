@@ -1,0 +1,5 @@
+1、vb开发老单插件 wash.vbp,washverify.cls
+1.2、 function:SetHead(ByVal Index As Long, ByVal Value) As Boolean
+2、修改事务类型 update ictransactiontype set fcheckpro=fcheckpro+'|redevclientobj:wash.washverify where fname like '生产领料单'
+3、k3bos ，生产领料单的插件管理里选择相应的插件
+4、

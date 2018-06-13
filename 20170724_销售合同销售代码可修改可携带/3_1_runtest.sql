@@ -1,0 +1,1 @@
+exec AIS20170714081229.dbo.SEOrderEntry_Computer1 'seord007428', 'Z1707-016', 3, '20170806', null
