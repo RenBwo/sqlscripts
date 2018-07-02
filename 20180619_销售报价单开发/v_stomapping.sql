@@ -1,7 +1,7 @@
-select top 10 b.fname,c.fname,a.* from icitemmapping a join t_organization b 
+select top 10 b.fname,c.fnumber,c.fname,a.* from icitemmapping a join t_organization b 
 on a.fcompanyid = b.fitemid
 join t_icitem c on c.fitemid = a.fitemid and c.fnumber like '01.01.%'
-where a.fpropertyid = 1 
+where a.fpropertyid = 1 and isnull(a.ModelHstSaleQty,0)>0
 use ais20161026113020
 alter  VIEW v_CToIMapping
 AS
@@ -20,9 +20,9 @@ AS
       FROM ICItemMapping (NOLOCK)
      WHERE FPropertyID = 1
      --
-   --  alter table icitemmapping ADD HisSaleQty decimal(30,6) default 0
-   alter table icitemmapping drop DF__ICItemMap__HisSa__696DCCAC
-   --alter table icitemmapping drop column HisSaleQty 
+   --  alter table icitemmapping ADD ModelHstSaleQty decimal(30,6) default 0
+   alter table icitemmapping drop DF__ICItemMap__Model__0F571391
+   --alter table icitemmapping drop column ModelHisSaleQty 
    select top 3  * from icitemmapping
    select * from icclasstype where fname_chs like '%物料对应%'
    select * from icclasstypeentry where fparentid = 1007103
