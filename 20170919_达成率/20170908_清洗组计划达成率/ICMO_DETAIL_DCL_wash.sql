@@ -10,7 +10,7 @@
  * DESCRIPTIONS:	4、ICSTOCKBILLENTRY.FICMOINTERID=PPBOMENTRY.FICMOINTERID
  * 
  */
-alter  PROCEDURE [dbo].[ICMO_DETAIL_DCL_wash] 
+CREATE  PROCEDURE [dbo].[ICMO_DETAIL_DCL_wash] 
 	@FPlanFDate1	datetime,								--the First-finish Date 
 	@FPlanFDate2	datetime								--the Last-finish DateAS
 as 
@@ -50,7 +50,8 @@ from
 		join 	ppbomentry 			c 	on c.ficmointerid = b.ficmointerid 
 										and b.fitemid = c.fitemid 
 		join	icmo				e	on e.finterid = b.ficmointerid 
-										and e.fplanfinishdate between @FPlanFDate1 and @FPlanFDate2
+										--and e.fplanfinishdate between @FPlanFDate1 and @FPlanFDate2
+										where a.fheadselfb0435 between @FPlanFDate1 and @FPlanFDate2
 		) w
 	group by w.fbillno,w.fheadselfb0436,w.fheadselfb0435,w.fdate) w1 
 order by w1.fdate

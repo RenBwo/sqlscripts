@@ -1,6 +1,4 @@
 /* 
- * DATE:			2018/03/06
- * DESCRIPTIONS:	下料组全是100%，孙工
  * DATE：			2017/09/04
  * AUTHOR：			RENBWO
  * DESCRIPTIONS:	生产任务单明细及达成率查询--下料
@@ -27,7 +25,7 @@
  * DESCRIPTIONS：	4、FTranType ：2-- 产成品入库
  * 
  */
-alter  PROCEDURE [dbo].[ICMO_DETAIL_DCL_XIALIAOZU] 
+CREATE  PROCEDURE [dbo].[ICMO_DETAIL_DCL_XIALIAOZU] 
 	@FPlanFDate1	datetime,								--the First-finish Date 
 	@FPlanFDate2	datetime								--the Last-finish DateAS
 as 
