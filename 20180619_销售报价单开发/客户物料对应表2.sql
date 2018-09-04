@@ -21,6 +21,8 @@ WHERE     (FPropertyID = 1)
 -- F_171	RMB产品控制利润率 
 -- F_175	USD产品控制利润率%
 -- F_172	本型号历史销售数量
+-- f_125 发货条件 
+-- FvalueAddRate 增值税率
 --drop view v_ctoimapping2
 create view  v_ctoimapping2 as 
 SELECT     200000024 AS FClassTypeID, t1.FEntryID AS FID, t1.FEntryID
@@ -37,6 +39,7 @@ SELECT     200000024 AS FClassTypeID, t1.FEntryID AS FID, t1.FEntryID
 ,isnull(t2.f_172,0.0)  as FModHstSaleQty
 , t1.ModelHstSaleQty as FCustModHstSalQty
 ,t3.f_125 as FshipmentCondition,t4.fname as FshipmentConditionName
+,t3.fvalueaddrate 
 FROM         dbo.ICItemMapping AS t1 WITH (NOLOCK) 
 INNER JOIN   dbo.t_ICItem AS t2 WITH (NOLOCK) ON t1.FItemID = t2.FItemID
 join 		dbo.t_Organization t3 with (nolock) on t3.FItemID = t1.fcompanyid

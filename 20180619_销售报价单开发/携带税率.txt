@@ -1,0 +1,1 @@
+BOSSer_GetTaxRate{Para=[P_SystemType=0,P_CompanyType=0,P_CompanyID=FCustID,P_TaxRateOption=0];Return=[P_TaxRate=FCess];BOSAction=[BSA_FillRowType=-1,BSA_ReadRowType=-1]}

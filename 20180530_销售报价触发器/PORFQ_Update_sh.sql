@@ -1,4 +1,14 @@
 /* 
+ * DATA:		2018/09/04
+ * AUTHOR:		RENBO
+ * DESCRIPTION:	表头增加“上海有色金属网铝锭期货价格”，
+ * 				取核算项目.上海有色金属网铝锭期货价格的数据
+ * 
+ * DATA:		2018/08/18
+ * AUTHOR:		RENBO
+ * DESCRIPTION:	单据子体的价格类型数据来源，从“价格类型”变更为“核算项目.运费标准.价格类型”，
+ * 				本程序的 “porfqentry.FPriceType” 变更为“t_item_3029.f_107”
+ * 
  * AUTHOR:		YangYuan
  * DATE: 		2014-12-29
  * Description:	销售报价单相当于调价申请单 审核时 
@@ -10,7 +20,7 @@
  * 					一个客户一种物料可以对应不同价格类型的数据 因发货地址不同  盛红春要求2015年8月份
  * 					B. 新增
  */
-Alter TRIGGER [dbo].[PORFQ_Update_sh] 	ON [dbo].[PORFQ]   AFTER UPDATE
+alter TRIGGER [dbo].[PORFQ_Update_sh] 	ON [dbo].[PORFQ]   AFTER UPDATE
 AS 
 BEGIN
 	SET NOCOUNT ON
@@ -36,6 +46,15 @@ BEGIN
 	SET		@X_ADD=0
     SET		@M_MESSAGE=''      
     select @FStatus=FStatus  from inserted	
+    if @fstatus = 0 
+    begin
+	    update porfq set FAiFurPriceShanghai=(
+					select isnull(f_101,0) from t_item_3032 
+					where f_102 <= getdate() and f_103 >= getdate()
+					)
+		from porfq a join inserted b on a.finterid = b.finterid 
+		--上海有色金属网铝锭期货价格
+	end
     
     IF @FStatus =1   ---审核状态
     BEGIN
@@ -47,14 +66,15 @@ BEGIN
 				 , B.FItemID				-- 物料
 				 , B.FUnitID				-- 单位
 				 , B.FAuxTaxPriceDiscount   -- 实绩含税单价
-				 , B.FPriceType			    -- 价格类型
+				 , c.f_107			    	-- 价格类型 B.FPriceType
 				 , B.FBegDate				-- 生效日期
 				 , B.FEndDate				-- 失效日期
 				 , B.FNote					-- 备注
 				 , B.FCusItemID				-- 客户对应物料代码
 				 , B.FCusItemName			-- 客户对应物料名称
 			  FROM INSERTED a
-			 INNER JOIN PORFQEntry b on a.FInterID = b.FInterID		 
+			 INNER JOIN PORFQEntry b on a.FInterID = b.FInterID
+		 	JOIN t_item_3029 c on c.fitemid = b.fpricetype		 
 			  	    
 		OPEN cur_xs	    
 		FETCH NEXT FROM cur_xs into @FInterID ,@FDetailID, @FCustID, @FCurrencyID
@@ -123,4 +143,5 @@ BEGIN
 		CLOSE cur_xs
 		DEALLOCATE cur_xs 
 	END
+	
 END

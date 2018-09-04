@@ -10,7 +10,7 @@ set @period = convert(varchar(6),dateadd(month,datediff(month,0,getdate())-1,0),
 select @fplandatestart = convert(date,dateadd(month,datediff(month,0,getdate())-1,0))
 select @fplandateend = convert(date,dateadd(day,-1,DATEADD(month, DATEDIFF(mm,0,getdate()), 0)))
 --exec ICMO_DETAIL_DCL_1K_NEW @fplandatestart,@fplandateend,' ',' ',' ',' ',' ',	' '  
---exec sxh_ICMO_DETAIL_DCL_2K_NEW @fplandatestart,@fplandateend,' ',' ',' ',' ',' ',' '
+exec sxh_ICMO_DETAIL_DCL_2K_NEW @fplandatestart,@fplandateend,' ',' ',' ',' ',' ',' '
 --EXEC ICMO_DETAIL_DCL_3K_NEW @fplandatestart,'01-31-2018',' ',' ',' ',' ',' ',' '
 --EXEC ICMO_DETAIL_DCL_4K @fplandatestart,'01-31-2018',' ',' ',' ',' ',' ',' '
 --EXEC ICMO_DETAIL_DCL_5K @fplandatestart,@fplandateend,' ',' ',' ',' ',' ',' '
@@ -85,189 +85,189 @@ create table #t6(生产任务单编号	varchar(max),工作令号	 varchar(max),�
 ,达成率	varchar(max),计划数量合计每天 varchar(max))
 
 --一科
-delete from  #t1
+truncate table  #t1
 insert into #t1 exec ICMO_DETAIL_DCL_1K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.01.0001','S6.01.0001',' '  
 insert into t_dachenglv
 select @period,'一科' ,生产车间,达成率,品质平均达成率 from #t1 where fline1 =  (select max(convert(int,fline1)) as maxline from #t1)  
-delete from  #t1
+truncate table  #t1
 insert into #t1 exec ICMO_DETAIL_DCL_1K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.01.0002','S6.01.0002',' ' 
 insert into t_dachenglv
 select @period,'一科' ,生产车间,达成率,品质平均达成率 from #t1 where fline1 =  (select max(convert(int,fline1)) as maxline from #t1)
-delete from  #t1
+truncate table  #t1
 insert into #t1 exec ICMO_DETAIL_DCL_1K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.01.0003','S6.01.0003',' ' 
 insert into t_dachenglv
 select @period,'一科' ,生产车间,达成率,品质平均达成率 from #t1 where fline1 =  (select max(convert(int,fline1)) as maxline from #t1)
 
-delete from  #t1
+truncate table  #t1
 insert into #t1 exec ICMO_DETAIL_DCL_1K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.01.0001','S6.01.0003',' ' 
 insert into t_dachenglv
 select @period,'一科' ,'汇总',达成率,品质平均达成率 from #t1 where fline1 =  (select max(convert(int,fline1)) as maxline from #t1)
 
 --二科
-delete from  #t1
+truncate table  #t1
 insert into #t1 exec ICMO_DETAIL_DCL_2K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.02.0001','S6.02.0001',' '  
 insert into t_dachenglv
 select @period,'二科' ,生产车间,达成率,品质平均达成率 from #t1 where fline1 =  (select max(convert(int,fline1)) as maxline from #t1)  
-delete from  #t1
+truncate table  #t1
 insert into #t1 exec ICMO_DETAIL_DCL_2K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.02.0002','S6.02.0002',' ' 
 insert into t_dachenglv
 select @period,'二科' ,生产车间,达成率,品质平均达成率 from #t1 where fline1 =  (select max(convert(int,fline1)) as maxline from #t1)
-delete from  #t1
+truncate table  #t1
 insert into #t1 exec ICMO_DETAIL_DCL_2K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.02.0003','S6.02.0003',' ' 
 insert into t_dachenglv
 select @period,'二科' ,生产车间,达成率,品质平均达成率 from #t1 where fline1 =  (select max(convert(int,fline1)) as maxline from #t1)
-delete from  #t1
+truncate table  #t1
 insert into #t1 exec ICMO_DETAIL_DCL_2K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.02.0004','S6.02.0004',' ' 
 insert into t_dachenglv
 select @period,'二科' ,生产车间,达成率,品质平均达成率 from #t1 where fline1 =  (select max(convert(int,fline1)) as maxline from #t1)
-delete from  #t1
+truncate table  #t1
 insert into #t1 exec ICMO_DETAIL_DCL_2K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.02.0005','S6.02.0005',' ' 
 insert into t_dachenglv
 select @period,'二科' ,生产车间,达成率,品质平均达成率 from #t1 where fline1 =  (select max(convert(int,fline1)) as maxline from #t1)
-delete from  #t1
+truncate table  #t1
 insert into #t1 exec ICMO_DETAIL_DCL_2K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.02.0006','S6.02.0006',' ' 
 insert into t_dachenglv
 select @period,'二科' ,生产车间,达成率,品质平均达成率 from #t1 where fline1 =  (select max(convert(int,fline1)) as maxline from #t1)
-delete from  #t1
+truncate table  #t1
 insert into #t1 exec ICMO_DETAIL_DCL_2K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.02.0007','S6.02.0007',' ' 
 insert into t_dachenglv
 select @period,'二科' ,生产车间,达成率,品质平均达成率 from #t1 where fline1 =  (select max(convert(int,fline1)) as maxline from #t1)
-delete from  #t1
+truncate table  #t1
 insert into #t1 exec ICMO_DETAIL_DCL_2K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.02.0008','S6.02.0008',' ' 
 insert into t_dachenglv
 select @period,'二科' ,生产车间,达成率,品质平均达成率 from #t1 where fline1 =  (select max(convert(int,fline1)) as maxline from #t1)
 
-delete from  #t1
+truncate table  #t1
 insert into #t1 exec ICMO_DETAIL_DCL_2K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.02.0001','S6.02.0008',' ' 
 insert into t_dachenglv
 select @period,'二科' ,'汇总',达成率,品质平均达成率 from #t1 where fline1 =  (select max(convert(int,fline1)) as maxline from #t1)
 
 --三科
-delete from  #t1
+truncate table  #t1
 insert into #t1 exec ICMO_DETAIL_DCL_3K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.03.0001','S6.03.0001',' '  
 insert into t_dachenglv
 select @period,'三科' ,生产车间,达成率,品质平均达成率 from #t1 where fline1 =  (select max(convert(int,fline1)) as maxline from #t1)  
-delete from  #t1
+truncate table  #t1
 insert into #t1 exec ICMO_DETAIL_DCL_3K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.03.0002','S6.03.0002',' ' 
 insert into t_dachenglv
 select @period,'三科' ,生产车间,达成率,品质平均达成率 from #t1 where fline1 =  (select max(convert(int,fline1)) as maxline from #t1)
-delete from  #t1
+truncate table  #t1
 insert into #t1 exec ICMO_DETAIL_DCL_3K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.03.0003','S6.03.0003',' ' 
 insert into t_dachenglv
 select @period,'三科' ,生产车间,达成率,品质平均达成率 from #t1 where fline1 =  (select max(convert(int,fline1)) as maxline from #t1)
-delete from  #t1
+truncate table  #t1
 insert into #t1 exec ICMO_DETAIL_DCL_3K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.03.0004','S6.03.0004',' ' 
 insert into t_dachenglv
 select @period,'三科' ,生产车间,达成率,品质平均达成率 from #t1 where fline1 =  (select max(convert(int,fline1)) as maxline from #t1)
-delete from  #t1
+truncate table  #t1
 insert into #t1 exec ICMO_DETAIL_DCL_3K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.03.0005','S6.03.0005',' ' 
 insert into t_dachenglv
 select @period,'三科' ,生产车间,达成率,品质平均达成率 from #t1 where fline1 =  (select max(convert(int,fline1)) as maxline from #t1)
 
-delete from  #t1
+truncate table  #t1
 insert into #t1 exec ICMO_DETAIL_DCL_3K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.03.0001','S6.03.0005',' ' 
 insert into t_dachenglv
 select @period,'三科' ,'汇总',达成率,品质平均达成率 from #t1 where fline1 =  (select max(convert(int,fline1)) as maxline from #t1)
 
 --四科
-delete from  #t5
+truncate table  #t5
 insert into #t5 exec ICMO_DETAIL_DCL_4K @fplandatestart,@fplandateend,' ',' ',' ','S6.04.0001','S6.04.0001',' '  
 insert into t_dachenglv(Period,DEPT,WorkShop,Rate_dacheng)
 select @period,'四科' ,生产车间,达成率 from #t5 where fline1 =  (select max(convert(int,fline1)) as maxline from #t5)  
-delete from  #t5
+truncate table  #t5
 insert into #t5 exec ICMO_DETAIL_DCL_4K @fplandatestart,@fplandateend,' ',' ',' ','S6.04.0002','S6.04.0002',' ' 
 insert into t_dachenglv(Period,DEPT,WorkShop,Rate_dacheng)
 select @period,'四科' ,生产车间,达成率  from #t5 where fline1 =  (select max(convert(int,fline1)) as maxline from #t5)
-delete from  #t5
+truncate table  #t5
 insert into #t5 exec ICMO_DETAIL_DCL_4K @fplandatestart,@fplandateend,' ',' ',' ','S6.04.0003','S6.04.0003',' ' 
 insert into t_dachenglv(Period,DEPT,WorkShop,Rate_dacheng)
 select @period,'四科' ,生产车间,达成率  from #t5 where fline1 =  (select max(convert(int,fline1)) as maxline from #t5)
-delete from  #t5
+truncate table  #t5
 insert into #t5 exec ICMO_DETAIL_DCL_4K @fplandatestart,@fplandateend,' ',' ',' ','S6.04.0004','S6.04.0004',' ' 
 insert into t_dachenglv(Period,DEPT,WorkShop,Rate_dacheng)
 select @period,'四科' ,生产车间,达成率  from #t5 where fline1 =  (select max(convert(int,fline1)) as maxline from #t5)
-delete from  #t5
+truncate table  #t5
 insert into #t5 exec ICMO_DETAIL_DCL_4K @fplandatestart,@fplandateend,' ',' ',' ','S6.04.0005','S6.04.0005',' ' 
 insert into t_dachenglv(Period,DEPT,WorkShop,Rate_dacheng)
 select @period,'四科' ,生产车间,达成率  from #t5 where fline1 =  (select max(convert(int,fline1)) as maxline from #t5)
 
-delete from  #t5
+truncate table  #t5
 insert into #t5 exec ICMO_DETAIL_DCL_4K @fplandatestart,@fplandateend,' ',' ',' ','S6.04.0001','S6.04.0005',' ' 
 insert into t_dachenglv(Period,DEPT,WorkShop,Rate_dacheng)
 select @period,'四科' ,'汇总',达成率 from #t5 where fline1 =  (select max(convert(int,fline1)) as maxline from #t5)
 
-delete from  #t4
+truncate table  #t4
 insert into #t4 exec ICMO_quality_DCL_4K @fplandatestart,@fplandateend
 update t_dachenglv set Rate_quality_dacheng = (select rate from #t4 ) where period = @period and dept like '四科'and workshop like  '汇总'
 
 --五科
-delete from #t5
+truncate table #t5
 insert into #t5 exec ICMO_DETAIL_DCL_5K @fplandatestart,@fplandateend,'','','','','','' 
 insert into t_dachenglv(Period,DEPT,WorkShop,Rate_dacheng)
 select @period,'五科' ,'汇总',达成率  from #t5 where fline1 =  (select max(convert(int,fline1)) as maxline from #t5)
 
 --六科
-delete from  #t1
+truncate table  #t1
 insert into #t1 exec ICMO_DETAIL_DCL_6K_WG @fplandatestart,@fplandateend,' ',' ',' ','S6.06.0001','S6.06.0001',' '  
 insert into t_dachenglv 
 select @period,'六科' ,生产车间,达成率,品质平均达成率 from #t1 where fline1 =  (select max(convert(int,fline1)) as maxline from #t1)  
-delete from  #t1
+truncate table  #t1
 insert into #t1 exec ICMO_DETAIL_DCL_6K_WG @fplandatestart,@fplandateend,' ',' ',' ','S6.06.0002','S6.06.0002',' ' 
 insert into t_dachenglv 
 select @period,'六科' ,生产车间,达成率,品质平均达成率 from #t1 where fline1 =  (select max(convert(int,fline1)) as maxline from #t1)
 
-delete from  #t1
+truncate table  #t1
 insert into #t1 exec ICMO_DETAIL_DCL_6K_WG @fplandatestart,@fplandateend,' ',' ',' ','S6.06.0001','S6.06.0002',' ' 
 insert into t_dachenglv 
 select @period,'六科','汇总',达成率,品质平均达成率 from #t1 where fline1 =  (select max(convert(int,fline1)) as maxline from #t1)
 
 
 --七科
-delete from #t6
+truncate table #t6
 insert into #t6 exec ICMO_DETAIL_DCL_7K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.07.0001','S6.07.0001',' '  
 insert into t_dachenglv(Period,DEPT,WorkShop,Rate_dacheng)
 select @period,'七科' ,生产车间,达成率 from #t6 where fline1 =  (select max(convert(int,fline1)) as maxline from #t6)  
-delete from  #t6
+truncate table  #t6
 insert into #t6 exec ICMO_DETAIL_DCL_7K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.07.0002','S6.07.0002',' ' 
 insert into t_dachenglv(Period,DEPT,WorkShop,Rate_dacheng)
 select @period,'七科' ,生产车间,达成率  from #t6 where fline1 =  (select max(convert(int,fline1)) as maxline from #t6)
-delete from  #t6
+truncate table  #t6
 insert into #t6 exec ICMO_DETAIL_DCL_7K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.07.0003','S6.07.0003',' ' 
 insert into t_dachenglv(Period,DEPT,WorkShop,Rate_dacheng)
 select @period,'七科' ,生产车间,达成率 from #t6 where fline1 =  (select max(convert(int,fline1)) as maxline from #t6)
-delete from  #t6
+truncate table  #t6
 insert into #t6 exec ICMO_DETAIL_DCL_7K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.07.0004','S6.07.0004',' ' 
 insert into t_dachenglv(Period,DEPT,WorkShop,Rate_dacheng)
 select @period,'七科' ,生产车间,达成率  from #t6 where fline1 =  (select max(convert(int,fline1)) as maxline from #t6)
-delete from  #t6
+truncate table  #t6
 insert into #t6 exec ICMO_DETAIL_DCL_7K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.07.0005','S6.07.0005',' ' 
 insert into t_dachenglv(Period,DEPT,WorkShop,Rate_dacheng)
 select @period,'七科' ,生产车间,达成率 from #t6 where fline1 =  (select max(convert(int,fline1)) as maxline from #t6)
-delete from  #t6
+truncate table  #t6
 insert into #t6 exec ICMO_DETAIL_DCL_7K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.07.0006','S6.07.0006',' ' 
 insert into t_dachenglv(Period,DEPT,WorkShop,Rate_dacheng)
 select @period,'七科' ,生产车间,达成率  from #t6 where fline1 =  (select max(convert(int,fline1)) as maxline from #t6)
-delete from  #t6
+truncate table  #t6
 insert into #t6 exec ICMO_DETAIL_DCL_7K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.07.0007','S6.07.0007',' ' 
 insert into t_dachenglv(Period,DEPT,WorkShop,Rate_dacheng)
 select @period,'七科' ,生产车间,达成率  from #t6 where fline1 =  (select max(convert(int,fline1)) as maxline from #t6)
-delete from  #t6
+truncate table  #t6
 insert into #t6 exec ICMO_DETAIL_DCL_7K_NEW @fplandatestart,@fplandateend,' ',' ',' ','S6.07.0008','S6.07.0008',' ' 
 insert into t_dachenglv(Period,DEPT,WorkShop,Rate_dacheng)
 select @period,'七科' ,生产车间,达成率  from #t6 where fline1 =  (select max(convert(int,fline1)) as maxline from #t6)
 
-delete from  #t6
+truncate table  #t6
 insert into #t6 exec ICMO_DETAIL_DCL_7K_NEW  @fplandatestart,@fplandateend,' ',' ',' ','S6.07.0001','S6.07.0008',' '
 insert into t_dachenglv(Period,DEPT,WorkShop,Rate_dacheng)
 select @period,'七科' ,'汇总',达成率  from #t6 where fline1 =  (select max(convert(int,fline1)) as maxline from #t6)
 
 --物流
-delete from  #t2
+truncate table  #t2
 insert into #t2 exec ICMO_DETAIL_DCL_wash @fplandatestart,@fplandateend 
 insert into t_dachenglv(Period,DEPT,WorkShop,Rate_dacheng)
 select @period,'物流' ,'清洗组',finishrate from #t2 where sum0 =  (select max(convert(int,sum0)) as maxline from #t2)
 
-delete from  #t3
+truncate table  #t3
 insert into #t3 exec ICMO_DETAIL_DCL_xialiaozu @fplandatestart,@fplandateend 
 insert into t_dachenglv(Period,DEPT,WorkShop,Rate_dacheng)
 select @period,'物流' ,'下料组',finishrate from #t3 where sum0 =  (select max(convert(int,sum0)) as maxline from #t3)
