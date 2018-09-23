@@ -1,8 +1,9 @@
 --F_171	RMB产品控制利润率 
 -- F_175	USD产品控制利润率%
 -- F_172	本型号历史销售数量
-update ais20161026113020.dbo.t_icitemcustom set  f_171=b.f_171
-,f_172=b.f_172,f_175=b.f_175
+update ais20161026113020.dbo.t_icitemcustom set  
+f_173=b.f_173,f_174=b.f_174,f_177=b.f_177
+,f_171=b.f_171,f_172=b.f_172,f_175=b.f_175
 from ais20161026113020.dbo.t_icitemcustom a 
 join ais20091217151735.dbo.t_icitemcustom b on a.fitemid = b.fitemid
 --F_115	返点%,F_116	标准利润率%,F_121	质量赔偿金折扣率%（批量事故除外）
