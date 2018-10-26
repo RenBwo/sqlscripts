@@ -1,4 +1,4 @@
-
+--no using
 alter trigger trig_icsale_ModelHisSaleQty 
 on icsale for update,delete 
 as 

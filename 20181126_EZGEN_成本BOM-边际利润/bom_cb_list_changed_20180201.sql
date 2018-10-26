@@ -772,7 +772,10 @@ WHERE fcyfor = 1 and fcyto = 1000 and fenddate > getdate() and fexchangeratetype
  FROM #BomCost v1 
  GROUP BY FParentItemid 
  
- ------ 计划单价,先取供应商价格体系中取最大的报价 再取物料信息的计划单价 ------ 吴总指示  20141220
+/* 
+ * 计划单价,1.先取供应商价格体系中取最大的报价 2.再取物料信息的计划单价 ------ 吴总指示  20141220
+ * 计划单价变更，1.蓝字采购发票过去一年的平均不含税价格,2.物料计划价格 -- 20180201
+ */
 UPDATE b
 SET b.FPlanPrice=a.avrPrice,b.FPlanAmount=a.avrPrice * b.fqty		-- 20180201
 from (SELECT b.fitemid,b.funitid,sum(b.fstdamount) AS funtaxamount, sum(b.fqty) AS fqty

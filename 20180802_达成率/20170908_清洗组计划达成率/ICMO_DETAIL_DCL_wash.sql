@@ -1,4 +1,9 @@
 /*
+ * DATE：			2018/10/17
+ * AUTHOR：			RENBWO
+ * DESCRIPTIONS：	达成标准变更：清洗确认时间<=生产任务单计划开工日期 00:00:00
+ * 					(icstock.fheadselfb0435 <=icmo.fplancommitdate)
+ * 
  * DATE：			2017/09/04
  * AUTHOR：			RENBWO
  * DESCRIPTIONS:	清洗组达成率查询
@@ -10,7 +15,7 @@
  * DESCRIPTIONS:	4、ICSTOCKBILLENTRY.FICMOINTERID=PPBOMENTRY.FICMOINTERID
  * 
  */
-CREATE  PROCEDURE [dbo].[ICMO_DETAIL_DCL_wash] 
+alter PROCEDURE [dbo].[ICMO_DETAIL_DCL_wash] 
 	@FPlanFDate1	datetime,								--the First-finish Date 
 	@FPlanFDate2	datetime								--the Last-finish DateAS
 as 
@@ -40,20 +45,19 @@ end) )/convert(decimal(10,3),row_number() over(order by w1.fdate)))
  as finishrate
 
 from
-	(select w.fdate,w.fbillno,w.fheadselfb0436 as washflag,max(w.fsenditemdate) as lastsenddate
-	,w.fheadselfb0435 as washdate 
-	from 
-		( select a.fbillno,b.fitemid,a.fheadselfb0436,c.fsenditemdate,a.fheadselfb0435,a.fdate
+	( select  a.fbillno,a.fheadselfb0436 as washflag
+		,min(e.fplancommitdate)  as lastsenddate
+		,a.fheadselfb0435  as washdate ,a.fdate
 		from	icstockbill 		a
 		join 	icstockbillentry 	b  	on a.finterid = b.finterid 
 										and a.fheadselfb0436='y'
-		join 	ppbomentry 			c 	on c.ficmointerid = b.ficmointerid 
-										and b.fitemid = c.fitemid 
+										
 		join	icmo				e	on e.finterid = b.ficmointerid 
+		--where a.fheadselfb0435 between '2018-10-01' and '2018-10-20'
 										--and e.fplanfinishdate between @FPlanFDate1 and @FPlanFDate2
-										where a.fheadselfb0435 between @FPlanFDate1 and @FPlanFDate2
-		) w
-	group by w.fbillno,w.fheadselfb0436,w.fheadselfb0435,w.fdate) w1 
+		where a.fheadselfb0435 between @FPlanFDate1 and @FPlanFDate2
+		group by a.fbillno,a.fheadselfb0436 ,a.fheadselfb0435  ,a.fdate
+		) w1 
 order by w1.fdate
 
 END

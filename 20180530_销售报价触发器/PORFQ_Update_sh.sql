@@ -42,16 +42,16 @@ BEGIN
 				@FMapName				VARCHAR(255),
 				@M_MESSAGE				VARCHAR(1000),
 				@X_ADD					INT
+				,@FAiPrice				decimal(20,4)
 	
 	SET		@X_ADD=0
     SET		@M_MESSAGE=''      
     select @FStatus=FStatus  from inserted	
     if @fstatus = 0 
     begin
-	    update porfq set FAiFurPriceShanghai=(
-					select isnull(f_101,0) from t_item_3032 
+	    select @FAiPrice=f_101 from t_item_3032 
 					where f_102 <= getdate() and f_103 >= getdate()
-					)
+		update porfq set FAiFurPriceShanghai=isnull(@FAiPrice,0)
 		from porfq a join inserted b on a.finterid = b.finterid 
 		--上海有色金属网铝锭期货价格
 	end
