@@ -1,4 +1,4 @@
-create procedure getHstQtyCustAndModel(@fitemid int ,@fcustid int,@fqtysum decimal(20,4) output) 
+alter procedure getHstQtyCustAndModel(@fitemid int ,@fcustid int,@fqtysum decimal(28,10) output) 
 as 
 begin
 select @fqtysum = isnull(sum(b.fqty),0) 
@@ -23,9 +23,10 @@ where fitemid =@fitemid  and  fcompanyid=@fcustid
 
 return 
 /* test
-	 
-	declare @fqty int
-	EXEC	[dbo].[getItselfHistSaleQty] 28788,@fqty output
+	 select top 1 * from t_organization
+	declare @fqty int,@fitemid0 int,@fcustid0 int
+	select @fitemid0=28788,@fcustid0=553
+	EXEC	[dbo].[getHstQtyCustAndModel] @fitemid0,@fcustid0,@fqty output
 	select @fqty
 	 
 	 */

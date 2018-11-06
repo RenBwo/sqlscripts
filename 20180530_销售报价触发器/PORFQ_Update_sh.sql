@@ -1,4 +1,8 @@
 /* 
+ * date:		2018/11/05
+ * author:		renbo
+ * description:	取消2018/08/18变更1
+ * 				增加运输类型ftrantype字段
  * DATA:		2018/09/04
  * AUTHOR:		RENBO
  * DESCRIPTION:	表头增加“上海有色金属网铝锭期货价格”，
@@ -49,8 +53,8 @@ BEGIN
     select @FStatus=FStatus  from inserted	
     if @fstatus = 0 
     begin
-	    select @FAiPrice=f_101 from t_item_3032 
-					where f_102 <= getdate() and f_103 >= getdate()
+	    select @FAiPrice=f_103 from t_item_3032 
+					where f_104 <= getdate() and f_105 >= getdate()
 		update porfq set FAiFurPriceShanghai=isnull(@FAiPrice,0)
 		from porfq a join inserted b on a.finterid = b.finterid 
 		--上海有色金属网铝锭期货价格
@@ -66,7 +70,7 @@ BEGIN
 				 , B.FItemID				-- 物料
 				 , B.FUnitID				-- 单位
 				 , B.FAuxTaxPriceDiscount   -- 实绩含税单价
-				 , c.f_107			    	-- 价格类型 B.FPriceType
+				 , B.FPriceType		    	-- 价格类型 	
 				 , B.FBegDate				-- 生效日期
 				 , B.FEndDate				-- 失效日期
 				 , B.FNote					-- 备注
@@ -74,7 +78,6 @@ BEGIN
 				 , B.FCusItemName			-- 客户对应物料名称
 			  FROM INSERTED a
 			 INNER JOIN PORFQEntry b on a.FInterID = b.FInterID
-		 	JOIN t_item_3029 c on c.fitemid = b.fpricetype		 
 			  	    
 		OPEN cur_xs	    
 		FETCH NEXT FROM cur_xs into @FInterID ,@FDetailID, @FCustID, @FCurrencyID

@@ -27,7 +27,6 @@ alter PROCEDURE [dbo].[AccountAgeAnalyze]
 @SaleCloseDate						datetime	,
 @SaleQtyMin							int			,
 @SaleQtyMax							int			,
-@run_key 							int			,
 @days								int			 )
 as 
 begin	
@@ -52,15 +51,13 @@ declare
 @SaleQtyMax							int			,
 @days								int	
 
-set @fnumberStart=''						
-set @fnumberEND	=''
-set @days=3000
+set @fnumberStart='01.01.00.0476-BG'						
+set @fnumberEND	='01.40.01.50.1011-W'
+set @days=365
+set @SaleStartDate='2017-10-29'
+set @SaleCloseDate='2018-10-29'
 --test end
 */
-	if isnull(@run_key,0) <9
-	begin
-		return
-	end 
 declare		@currentyear	varchar(4)		 
 		 ,	@currentperiod	varchar(2)
 		 ,	@check			int
@@ -88,9 +85,7 @@ begin  select @fspidStart	=	(select min(fnumber ) from t_stockplace ) end
 if isnull(ltrim(rtrim(@fspidEnd	)),'bd') = 'bd' or @fspidEnd=''
 begin  select @fspidEnd	=	(select max(fnumber ) from t_stockplace ) end
 if isnull(@CloseDate,'1900-01-01') = '1900-01-01'  or @CloseDate=''
-begin  select @CloseDate = dateadd(day,datediff(day,0,getdate()),0) end
-
-
+begin  select @CloseDate = dateadd(day,0,datediff(day,0,getdate())) end
 
 --select @fnumberStart as a,@fnumberEND as b  ,@fstockidStart as cv 	,@fstockidEnd as d ,@fspidStart as e,@fspidEnd as ff,@days as cc
 --select @CloseDate,@UnpackBomCheckStatus,@UnpackBomUseStatus,@ProdBomCheckStatus,@ProdBomUseStatus	,@SaleStartDate,@SaleCloseDate,@SaleQtyMin,@SaleQtyMax	,@days
@@ -115,44 +110,31 @@ begin  select @CloseDate = dateadd(day,datediff(day,0,getdate()),0) end
 /*
  * 最后出库日期,离截止日期最近的出库日期
  */
---有出库,取最后出库日期
+--有出库或者入库,取最后的（出库日期或者入库日期）
 select max(a.fdate) as MaxIssueDate,b.fitemid
 into #MaxIssueDate0 
 from icstockbill 		a 
 join icstockbillentry 	b on a.finterid= b.finterid 
 join t_icitem 			c on c.fitemid = b.fitemid
-where a.ftrantype in( '21','24','28','29') and a.fdate <= @CloseDate 
+where a.ftrantype in( '1','2','3','5','10','73','21','24','28','29') 
+and a.fdate <= @CloseDate 
 and isnull(a.fheadselfb0157,0) <> 293792	--销售状态不为销售分配
-and isnull(b.fqty,0) <> 0					--有出库 数量
+and isnull(b.fqty,0) <> 0					--有数量
 and c.fnumber between @fnumberStart and @fnumberEND
 group by b.fitemid
--- 有入库并且没出库,取入库日期
-select max(a.fdate) as MaxIssueDate,b.fitemid
-into #MaxIssueDate1
-from icstockbill 		a 
-join icstockbillentry 	b on a.finterid= b.finterid 
-join t_icitem 			c on c.fitemid = b.fitemid
-where a.ftrantype in( '1','2','3','5','10','73') 
-and a.fdate <= @CloseDate 
-and isnull(b.fqty ,0)<> 0							--有入库  数量
-and not exists(select 1 from #MaxIssueDate0 where fitemid = b.fitemid )	--没有出库记录 
-and c.fnumber between @fnumberStart and @fnumberEND 
-group by b.fitemid 
 --没有出入库 取系统建立日期 2010/04/01
 select distinct cast('2010-04-01' as date) as MaxIssueDate ,a.fitemid 
-into #MaxIssueDate2
+into #MaxIssueDate1
 from icinvbal a 
 join t_icitem c on c.fitemid = a.fitemid
 where fyear= @currentyear 
 and fperiod = @currentperiod  
-and not exists (select 1 from #MaxIssueDate0 where fitemid = a.fitemid) --没有出库记录
-and not exists (select 1 from #MaxIssueDate1 where fitemid = a.fitemid) --没有入库记录
+and not exists (select 1 from #MaxIssueDate0 where fitemid = a.fitemid) --没有出入库记录
 and c.fnumber between @fnumberStart and @fnumberEND
 /*
  * account age
- * 1.有出库的情况下，账龄=截止日期 - 最后出库日期
- * 2.有入库并且没出库的情况下，账龄=截止日期 - 入库日期
- * 3.没有出入库的情况,账龄=截止日期- 2010/04/01
+ * 1.有出库或者入库的情况下，账龄=截止日期 - 最后出/入库日期
+ * 2.没有出入库的情况,账龄=截止日期- 2010/04/01
  */
 select  mm.fitemid
 ,datediff(day,mm.MaxIssueDate,@CloseDate) 				as AcctAgeDay
@@ -162,16 +144,14 @@ select  mm.fitemid
 into #AccountAge 
 from ( select * from #MaxIssueDate0
 union all
-select * from #MaxIssueDate1  
-union all
-select * from #MaxIssueDate2 
+select * from #MaxIssueDate1 
 ) mm 
 where datediff(day,mm.MaxIssueDate,@CloseDate)>= @days
 order by AcctAgeDay desc ,mm.AcctAgeDayPart desc
 
-drop table #MaxIssueDate0,#MaxIssueDate1,#MaxIssueDate2
+drop table #MaxIssueDate0,#MaxIssueDate1
 
---select a.*,b.fnumber from #AccountAge a join t_icitem b on a.fitemid = b.fitemid  order by b.fnumber
+--select a.*,b.fnumber from #AccountAge a join t_icitem b on a.fitemid = b.fitemid and b.fnumber like '01.01.13.0438-c30041' --order by b.fnumber
 /* 
  * 至截止日期时库存量，
  * icinventory 即时库存 
@@ -342,12 +322,15 @@ order by sn
 select xo.* into #BomMap
 from (
 select  a.firstitemid as firstitemid,a.fitemid as itemId13,a.fparentid as itemId01 
+,a.fstatus,a.fusestatus
 from #bom a join t_icitemcore b 
 on a.fitemid = b.fitemid and b.fnumber like '13.%' 
 union all
-select  a.firstitemid as firstitemid,0 as itemId13,a.fitemid as itemId01 
-from #bom a join t_icitemcore b 
-on a.firstitemid = b.fitemid and b.fnumber like '01.%'
+select  a.fitemid as firstitemid,0 as itemId13,a.fitemid as itemId01 
+,a.fstatus,a.fusestatus
+from icbom a join t_icitemcore b 
+on a.fitemid = b.fitemid and b.fnumber like '01.%' 
+and b.fnumber between @fnumberStart and @fnumberEND
 ) xo 
 drop table  #bom
 --#HisSaleQty
@@ -368,11 +351,12 @@ join (select distinct itemid01 from #BomMap where isnull(itemid01,0)<>0)
 where t20.ftrantype = 21 
 and isnull(t20.fheadselfb0157,0) <> 293792'
 if isnull(@SaleStartDate,'1900-01-01') <>'1900-01-01' and  @SaleStartDate<>''
-begin  set @sql02='and t20.fdate >='+@SaleStartDate  end
+begin  set @sql02=' and t20.fdate >='''+convert(varchar(30),@SaleStartDate,121)+''''  end
 if isnull(@SaleCloseDate,'1900-01-01') <>'1900-01-01' and  @SaleCloseDate<>''
-begin set @sql03='and t20.fdate <= '+@SaleCloseDate  end
+begin set @sql03=' and t20.fdate <= '''+convert(varchar(30),@SaleCloseDate,121)+''''  end
 set @sql04=' group by t21.fitemid '
 --test exec(@sql01+@sql02+@sql03+@sql04)
+--select @sql02+@sql03
 set @sql05='   select * into  #HisSaleQty from #HisSaleList  where  1=1 '
 if isnull(@SaleQtyMin,0) > 0 
 begin set @sql06= ' and saleqty > '+convert(varchar(10),@SaleQtyMin)  end
@@ -387,8 +371,9 @@ declare @sql1 varchar(3000)
 ,@sql5 varchar(100) =''
 ,@sql6 varchar(100) =''
 ,@sql7 varchar(100) =''
+,@sql8 varchar(3000)
 
-select @sql1 = '  select t40.fitemid,''   ''+t40.fnumber as fnumber,t40.fmodel,t40.fname ,t45.fname as unitname
+select @sql1 = ' select distinct t40.fitemid,(''   ''+t40.fnumber) as fnumber,t40.fmodel,t40.fname ,t45.fname as unitname
 ,t41.inv_qty,t41.amt
 ,(case when isnull(t41.inv_qty,0) = 0 then 0 else round(t41.amt/t41.inv_qty,4) end ) as funitprice
 ,t46.fname as stockname, t47.fnumber as stockplace
@@ -402,23 +387,22 @@ select @sql1 = '  select t40.fitemid,''   ''+t40.fnumber as fnumber,t40.fmodel,t
 ,(case t60.fstatus when 1 then ''审核'' when 0 then ''未审核'' else '''' end) as UPBomCheckStatus
 ,t50.fname as UPBomUseStatus
 ,t62.Fnumber as fnumber01,t62.Fmodel as fmodel01,t62.Fname as fname01
-,(case t61.fstatus when 1 then ''审核'' when 0 then ''未审核'' else '''' end) as PRODBomCheckStatus
+,(case t99.fstatus when 1 then ''审核'' when 0 then ''未审核'' else '''' end) as PRODBomCheckStatus
 ,t51.fname as ProdBomUseStatus
 ,t44.SaleQty
-from #AccountAge			t42 
-join #Inventory				t41	on t42.fitemid = t41.fitemid and isnull(t41.inv_qty,0) <> 0
-left join 	#bommap 		t99 on t99.firstitemid = t42.fitemid
-left join	#HisSaleQty		t44	on t44.fitemid =t99.itemid01
-left join 	t_ICItem		t40 on t41.fitemid = t40.fitemid
+from        #AccountAge		t42 
+join 		#Inventory		t41	on t42.fitemid = t41.fitemid and isnull(t41.inv_qty,0) <> 0
+left join 	t_ICItem		t40 on t40.fitemid = t41.fitemid
 left join	t_measureunit	t45	on t45.fitemid = t40.funitid
-left join 	t_ICItem		t43 on t43.fitemid = t99.itemid13
-left join 	t_ICItem	 	t62 on t62.fitemid = t99.itemid01
 left join	t_stock			t46	on t46.fitemid = t41.fstockid	
 left join	t_stockplace	t47	on t47.fspid = t41.fstockplaceid
+left join	#bommap 		t99 on t99.firstitemid=t42.fitemid
+left join	#HisSaleQty		t44	on t44.fitemid =t99.itemid01
 left join   icbom 			t60 on t60.fitemid = t99.itemid13
-left join 	icbom 			t61 on t61.fitemid = t99.itemid01
+left join 	t_ICItem		t43 on t43.fitemid = t99.itemid13
+left join 	t_ICItem	 	t62 on t62.fitemid = t99.itemid01
 left join	t_submessage	t50	on t50.finterid = t60.fusestatus
-left join	t_submessage	t51	on t51.finterid = t61.fusestatus
+left join	t_submessage	t51	on t51.finterid = t99.fusestatus
  where 1=1 '
 
 if (@UnpackBomCheckStatus = 'y'  )
@@ -438,7 +422,8 @@ begin select @sql5 = ' and t61.fusestatus =  1072 ' end
 if ( @prodBomUseStatus = 'n' )
 begin select @sql5 = ' and t61.fusestatus = 1073 ' end
 set @sql6=' order by t42.AcctAgeDay desc '
-set @sql7=' drop table  #HisSaleList,#HisSaleQty'
+set @sql7=' drop table  #bommap,#HisSaleList,#HisSaleQty'
+
 execute (@sql01+@sql02+@sql03+@sql04+@sql05+@sql1+@sql2+@sql3+@sql4+@sql5+@sql6+@sql7)
 /*
 select * from #Inventory where fitemid = 49229

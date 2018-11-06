@@ -1,0 +1,21 @@
+* 销售报价单升级记录
+** 价格类型		改取运费标准
+运费计量单位引用运费标准
+*** 核算项目.运费标准
+**** 增加属性 
+    增值税税率
+    不含税价格
+**** 升级不含税价格
+    update t_item_3029 set f_110=round(f_103/(1+f_106) ,2)
+
+运费单价（不含税）引用运费标准
+1	FBase	0	4096	FAction			FBaseProperty3,FDecimal2=F_110		1	值更新事件
+2	FBase	0	4096	FAction			FDecimal=FItemNumber.FSize	ME.F_105=207266	2	值更新事件
+2	FBase	0	4096	FAction			FDecimal=FItemNumber.FSize*100000/12000	ME.F_105=125	3	值更新事件
+2	FBase	0	4096	FAction			FDecimal3=FDecimal2*FDecimal		4	值更新事件
+14	FBase	0	4096	FAction			FAuxPrice		5	值更新事件
+ 
+** 报价汇率类型
+	FBase3	FBase3,FCurrencyID,FDate,FDecimal4		1	值更新事件
+
+

@@ -3,6 +3,7 @@
  */
 select fsqltablename,* from t_itemclass where fname like '上海有色金属网%'
 select  fsqlcolumnname,fname,* from t_itempropdesc where fitemclassid = 3032
+
 /*
  * 运费标准
  */
