@@ -114,7 +114,7 @@ BEGIN
 				END
 			END
 			
-								-------客户价格体系检查
+			-------客户价格体系检查
 			IF (SELECT COUNT(*) FROM IcPrcPlyEntry WHERE FInterID=4 AND FItemID =@FITEMID AND FRelatedID=@FCustID
 					 AND FPriceType=@FPriceType AND FCuryID =@FCurrencyID )>0
 				BEGIN			-----客户价格体系存在(对应的价格类型)，先删除对应 价格类型和币别的客户价格体系

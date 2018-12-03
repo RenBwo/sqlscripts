@@ -17,9 +17,7 @@ begin
 		where g.fdate2 > getdate()
 		and exists (select 1 from inserted a 
 		join t_bos200000025entry b on a.fid = b.fid
-		and b.fbase=g.fbase)
-		and not exists(select 1 from inserted 
-		where fid = g.fid)
+		and b.fbase=g.fbase and g.fentryid < b.fentryid)
 		--update t_icitem
 		update t_icitemmaterial set fplanprice=b.fprice
 		from inserted 				a 

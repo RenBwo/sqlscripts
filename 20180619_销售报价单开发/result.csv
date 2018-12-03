@@ -1,111 +1,143 @@
-FID,FClassTypeID,FClassActionID,FObject,FDefineType,FSourceType,FSourceField,FAction,FExpression,FOrder,FDescription
-47388,1007006,22,EVENT,0,8192,FAfterLoadBillAction,,@HadBusinessMultiCheck=1,1,Added by BOS UPDATE
-47298,1007006,2,FAmount,0,4096,FAction,FAuxPriceIncludeTax=FAmount*(1+FCess/100)/FAuxQty/(1-FDescount/100),,1,值更新事件
-47299,1007006,2,FAmount,0,4096,FAction,FAuxPrice=FAuxPriceIncludeTax/(1+FCess/100),,2,值更新事件
-47300,1007006,2,FAmount,0,4096,FAction,FAuxTaxPriceDiscount=FAuxPriceIncludeTax*(1-FDescount/100),,3,值更新事件
-47301,1007006,2,FAmount,0,4096,FAction,FDiscountAmt=FAuxQty*FAuxPriceIncludeTax*FDescount/100,@SysProfileDisCountIncludeTax=1,4,值更新事件
-47302,1007006,2,FAmount,0,4096,FAction,FDiscountAmt=FAuxQty*FAuxPriceIncludeTax/(100+FCess)*FDescount,@SysProfileDisCountIncludeTax=0,5,值更新事件
-47303,1007006,2,FAmount,0,4096,FAction,FTaxAmount=FAuxQty*FAuxPriceIncludeTax*(1-FDescount/100)/(1+FCess/100)*FCess/100,FCess>0,6,值更新事件
-47304,1007006,2,FAmount,0,4096,FAction,FAmountIncludeTax=FAmount+FTaxAmount,,7,值更新事件
-47305,1007006,2,FAmount,0,4096,FAction,FPrice=FAuxPriceIncludeTax/(1+FCess/100)/FUnitID.FCoefficient,,8,值更新事件
-47306,1007006,9,FAuxPrice,0,4096,FSaveRule,"FAuxPrice<>0,CHS=单价不能等于零!@CHT=單價不能等於零!@EN=Unit Price can not be 0 !@,0",,1,保存规则
-47307,1007006,2,FAuxPrice,32768,4096,FAction,FAuxPriceIncludeTax=FAuxPrice*(1+FCess/100),,1,值更新事件
-47308,1007006,2,FAuxPrice,0,4096,FAction,"FDecimal9=FDecimal7*FDecimal17/100*FDecimal22/365
-",,2,值更新事件
-47309,1007006,2,FAuxPrice,0,4096,FAction,FDecimal23=FDecimal3+FDecimal7+FDecimal9+FDecimal21,,3,值更新事件
-47310,1007006,2,FAuxPrice,0,4096,FAction,FDescount=100-100*(FDecimal7+FDecimal3+FDecimal9)/(1-FDecimal18/100)*(1+FCess/100)/(1-FDecimal5/100)/(1-FDecimal6/100)/FAuxPriceIncludeTax/FDecimal4,,4,值更新事件
-47311,1007006,2,FAuxPrice,32768,4096,FAction,FAuxTaxPriceDiscount=FAuxPriceIncludeTax*(1-FDescount/100),,5,值更新事件
-47312,1007006,2,FAuxPrice,32768,4096,FAction,FAmount=FAuxQty*FAuxPriceIncludeTax*(1-FDescount/100)/(1+FCess/100),,6,值更新事件
-47313,1007006,2,FAuxPrice,32768,4096,FAction,FDiscountAmt=FAuxQty*FAuxPriceIncludeTax*FDescount/100,@SysProfileDisCountIncludeTax=1,7,值更新事件
-47314,1007006,2,FAuxPrice,32768,4096,FAction,FDiscountAmt=FAuxQty*FAuxPriceIncludeTax/(100+FCess)*FDescount,@SysProfileDisCountIncludeTax=0,8,值更新事件
-47315,1007006,2,FAuxPrice,32768,4096,FAction,FTaxAmount=FAuxQty*FAuxPriceIncludeTax*(1-FDescount/100)/(1+FCess/100)*FCess/100,FCess>0,9,值更新事件
-47316,1007006,2,FAuxPrice,32768,4096,FAction,FAmountIncludeTax=FAmount+FTaxAmount,,10,值更新事件
-47317,1007006,2,FAuxPrice,32768,4096,FAction,FPrice=FAuxPrice/FUnitID.FCoefficient,,11,值更新事件
-47318,1007006,2,FAuxPrice,0,4096,FAction,"FDecimal10=FAuxPriceIncludeTax*FDecimal4*(1-FDecimal6/100)*(1-FDecimal5/100)/(1+FCess/100)-(FDecimal3+FDecimal7+FDecimal9)
-",,12,值更新事件
-47319,1007006,2,FAuxPrice,0,4096,FAction,FDecimal11=(FAuxPriceIncludeTax*FDecimal4*(1-FDecimal6/100)*(1-FDecimal5/100)/(1+FCess/100)-(FDecimal3+FDecimal7+FDecimal9))/FAuxPriceIncludeTax*FDecimal4*(1-FDecimal6/100)*(1-FDecimal5/100)/(1-FCess/100),,13,值更新事件
-47320,1007006,2,FAuxPriceIncludeTax,32768,4096,FAction,FAuxPrice=FAuxPriceIncludeTax/(1+FCess/100),,1,值更新事件
-47321,1007006,2,FAuxPriceIncludeTax,0,4096,FAction,"FDecimal9=FDecimal7*FDecimal17/100*FDecimal22/365
-",,2,值更新事件
-47322,1007006,2,FAuxPriceIncludeTax,0,4096,FAction,"FDescount=100-100*(FDecimal7+FDecimal3+FDecimal9)/(1-FDecimal18/100)*(1+FCess/100)/(1-FDecimal5/100)/(1-FDecimal6/100)/FAuxPriceIncludeTax/FDecimal4
-",,3,值更新事件
-47323,1007006,2,FAuxPriceIncludeTax,32768,4096,FAction,FAuxTaxPriceDiscount=FAuxPriceIncludeTax*(1-FDescount/100),,4,值更新事件
-47324,1007006,2,FAuxPriceIncludeTax,32768,4096,FAction,FAmount=FAuxQty*FAuxPriceIncludeTax*(1-FDescount/100)/(1+FCess/100),,5,值更新事件
-47325,1007006,2,FAuxPriceIncludeTax,32768,4096,FAction,FDiscountAmt=FAuxQty*FAuxPriceIncludeTax*FDescount/100,@SysProfileDisCountIncludeTax=1,6,值更新事件
-47326,1007006,2,FAuxPriceIncludeTax,32768,4096,FAction,FDiscountAmt=FAuxQty*FAuxPriceIncludeTax/(100+FCess)*FDescount,@SysProfileDisCountIncludeTax=0,7,值更新事件
-47327,1007006,2,FAuxPriceIncludeTax,32768,4096,FAction,FTaxAmount=FAuxQty*FAuxPriceIncludeTax*(1-FDescount/100)/(1+FCess/100)*FCess/100,FCess>0,8,值更新事件
-47328,1007006,2,FAuxPriceIncludeTax,32768,4096,FAction,FAmountIncludeTax=FAmount+FTaxAmount,,9,值更新事件
-47329,1007006,2,FAuxPriceIncludeTax,32768,4096,FAction,FPrice=FAuxPriceIncludeTax/(1+FCess/100)/FUnitID.FCoefficient,,10,值更新事件
-47330,1007006,2,FAuxPriceIncludeTax,0,4096,FAction,"FDecimal10=FAuxPriceIncludeTax*FDecimal4*(1-FDecimal6/100)*(1-FDecimal5/100)/(1+FCess/100)-(FDecimal3+FDecimal7+FDecimal9)
-",,11,值更新事件
-47331,1007006,2,FAuxPriceIncludeTax,0,4096,FAction,"FDecimal11=(FAuxPriceIncludeTax*FDecimal4*(1-FDecimal6/100)*(1-FDecimal5/100)/(1+FCess/100)-(FDecimal3+FDecimal7+FDecimal9))/FAuxPriceIncludeTax*FDecimal4*(1-FDecimal6/100)*(1-FDecimal5/100)/(1-FCess/100)
-",,12,值更新事件
-47332,1007006,9,FAuxQty,0,4096,FSaveRule,"FAuxQty>0,CHS=产品的数量必须大于零。@CHT=產品的數量必須大于零。@EN=the Quantity of Product must be more than zero.@,0",,1,保存规则
-47333,1007006,2,FAuxQty,32768,4096,FAction,FQty=FAuxQty*FUnitID.FCoefficient,,1,值更新事件
-47334,1007006,14,FAuxQty,0,4096,FAction,"FDecimal15,FDecimal16",,2,值更新事件
-47335,1007006,2,FAuxQty,32768,4096,FAction,FAmount=FAuxQty*FAuxPriceIncludeTax*(1-FDescount/100)/(1+FCess/100),,3,值更新事件
-47336,1007006,2,FAuxQty,32768,4096,FAction,FDiscountAmt=FAuxQty*FAuxPriceIncludeTax*FDescount/100,@SysProfileDisCountIncludeTax=1,4,值更新事件
-47337,1007006,2,FAuxQty,32768,4096,FAction,FDiscountAmt=FAuxQty*FAuxPriceIncludeTax/(100+FCess)*FDescount,@SysProfileDisCountIncludeTax=0,5,值更新事件
-47338,1007006,2,FAuxQty,32768,4096,FAction,FTaxAmount=FAuxQty*FAuxPriceIncludeTax*(1-FDescount/100)/(1+FCess/100)*FCess/100,FCess>0,6,值更新事件
-47339,1007006,2,FAuxQty,32768,4096,FAction,FAmountIncludeTax=FAmount+FTaxAmount,,7,值更新事件
-47340,1007006,2,FAuxQtyFrom,0,4096,FAction,FQtyFrom=FAuxQtyFrom*FUnitID.FCoefficient,,1,值更新事件
-47341,1007006,2,FAuxQtyTo,0,4096,FAction,FQtyTo=FAuxQtyTo*FUnitID.FCoefficient,,1,值更新事件
-47342,1007006,1,FBase,0,4096,FAction,"FDecimal1=F_106,FDecimal2=F_103,FBaseProperty3",ME.F_109=FCustID.F_125,1,Add by Function SetSouceAction
-47343,1007006,2,FBase,0,4096,FAction,FDecimal3=FDecimal2*FDecimal,ME.F_105 =125,2,值更新事件
-47344,1007006,2,FBase,0,4096,FAction,FDecimal3=FDecimal2*FDecimal*100000/12000,ME.F_105=207266,3,值更新事件
-47345,1007006,14,FBase,0,4096,FAction,FAuxPrice,,4,值更新事件
-47346,1007006,100030,FBase3,0,4096,FAction,"FBase3,FCurrencyID,FDate,FDecimal4",,1,值更新事件
-47347,1007006,2,FBase4,0,4096,FAction,FDecimal17=ME.F_101*100,,1,值更新事件
-47348,1007006,2,FCess,32768,4096,FAction,FAuxPrice=FAuxPriceIncludeTax/(1+FCess/100),@SysProfileIsTaxInPrc=1,1,值更新事件
-47349,1007006,2,FCess,0,4096,FAction,FAuxPriceIncludeTax=FAuxPrice*(1+FCess/100),@SysProfileIsTaxInPrc=0,2,值更新事件
-47350,1007006,2,FCess,0,4096,FAction,FAuxTaxPriceDiscount=FAuxPriceIncludeTax*(1-FDescount/100),,3,值更新事件
-47351,1007006,2,FCess,32768,4096,FAction,FPrice=FAuxPriceIncludeTax/(1+FCess/100)/FUnitID.FCoefficient,,4,值更新事件
-47352,1007006,2,FCess,32768,4096,FAction,FAmount=FAuxQty*FAuxPriceIncludeTax*(1-FDescount/100)/(1+FCess/100),,5,值更新事件
-47353,1007006,2,FCess,32768,4096,FAction,FTaxAmount=FAuxQty*FAuxPriceIncludeTax*(1-FDescount/100)/(1+FCess/100)*FCess/100,FCess>0,6,值更新事件
-47354,1007006,2,FCess,32768,4096,FAction,FAmountIncludeTax=FAmount+FTaxAmount,,7,值更新事件
-47355,1007006,14,FCurrencyID,0,4096,FAction,"FDecimal15,FDecimal16,FBase3",,1,值更新事件
-47356,1007006,1,FCustID,32768,4096,FAction,"FCURRENCYID=FCYID,FBASEPROPERTY2,FBaseProperty4",ME.FCyID<>0,1,值更新事件
-47357,1007006,1,FCustID,32768,4096,FAction,"FPAYCONDITION=FPAYCONDITION,FDECIMAL8=F_116,FDECIMAL22=F_122,FDECIMAL6=F_115,FDECIMAL5=F_121,FBASE2=F_125",,2,值更新事件
-47358,1007006,1,FCustID,32768,4096,FAction,"FDEPTID=FDEPARTMENT,FEMPID=FEMPLOYEE",,3,值更新事件
-47359,1007006,100007,FCustID,32768,4096,FAction,"Para=[P_SystemType=1,P_CompanyType=0,P_CompanyID=FCustID,P_ICItemID=FItemNumber];Return=[P_TaxRate=FCess];BOSAction=[BSA_FillRowType=-2,BSA_ReadRowType=-2]",,4,值更新事件
-47360,1007006,2,FDecimal12,0,4096,FAction,FDecimal13=FDecimal12*(1-FDecimal6)*(1-FDecimal5)/(1+FCess)-FDecimal3-FDecimal7-FDecimal9,,1,值更新事件
-47361,1007006,2,FDecimal12,0,4096,FAction,FDecimal14=FDecimal12*(1-FDecimal6)*(1-FDecimal5)/(1+FCess)*(1-FCess)/(FDecimal12*(1-FDecimal6)*(1-FDecimal5)),FDecimal12>0,2,值更新事件
-47362,1007006,2,FDecimal15,0,4096,FAction,FDecimal18=FDecimal8,FCurrencyID=1 and FDecimal8>=FDecimal15,1,值更新事件
-47363,1007006,2,FDecimal15,0,4096,FAction,FDecimal18=FDecimal15,FCurrencyID=1 and FDecimal8 < FDecimal15,2,值更新事件
-47364,1007006,2,FDecimal16,0,4096,FAction,FDecimal18=FDecimal8,FCurrencyID=1000 and FDecimal8>=FDecimal16,1,值更新事件
-47365,1007006,2,FDecimal16,0,4096,FAction,FDecimal18=FDecimal16,FCurrencyID=1000 and FDecimal8 < FDecimal16,2,值更新事件
-47366,1007006,14,FDecimal17,0,4096,FAction,FAuxPrice,,1,值更新事件
-47367,1007006,14,FDecimal18,0,4096,FAction,FAuxPrice,,1,值更新事件
-47368,1007006,14,FDecimal22,0,4096,FAction,FAuxPrice,,1,值更新事件
-47369,1007006,14,FDecimal8,0,4096,FAction,"FDecimal15,FDecimal16",,1,值更新事件
-47370,1007006,2,FDescount,0,4096,FAction,FAuxTaxPriceDiscount=FAuxPriceIncludeTax*(1-FDescount/100),,1,值更新事件
-47371,1007006,2,FDescount,0,4096,FAction,FAmount=FAuxQty*FAuxPriceIncludeTax*(1-FDescount/100)/(1+FCess/100),,2,值更新事件
-47372,1007006,2,FDescount,0,4096,FAction,FDiscountAmt=FAuxQty*FAuxPriceIncludeTax*FDescount/100,@SysProfileDisCountIncludeTax=1,3,值更新事件
-47373,1007006,2,FDescount,0,4096,FAction,FDiscountAmt=FAuxQty*FAuxPriceIncludeTax/(100+FCess)*FDescount,@SysProfileDisCountIncludeTax=0,4,值更新事件
-47374,1007006,2,FDescount,0,4096,FAction,FTaxAmount=FAuxQty*FAuxPriceIncludeTax*(1-FDescount/100)/(1+FCess/100)*FCess/100,,5,值更新事件
-47375,1007006,2,FDescount,0,4096,FAction,FAmountIncludeTax=FAmount+FTaxAmount,,6,值更新事件
-47376,1007006,9,FExchangeRate,0,4096,FSaveRule,"FExchangeRate>0,CHS=汇率必须大于0!@CHT=匯率必須大於0!@EN=Exchange rate must be greater than 0 !@,0",,1,保存规则
-47377,1007006,1,FItemNumber,32768,4096,FAction,"FItemName,FModel,FBaseUnit,FUnitID=FSaleUnitID,FBaseProperty,FBaseProperty1,FDecimal=FSize,FDecimal7=FStandardCost,FDecimal19=F_172,FDecimal15=F_171,FDecimal16=F_175",,1,Add by Function SetSouceAction
-47384,1007006,5,FItemNumber,0,4096,FLoadAction,"FAUXPRICE,FAUXQTY,FAUXQTYFROM,FAUXQTYTO,FAUXPRICEINCLUDETAX,FAUXTAXPRICEDISCOUNT,FSELFDEFINEPRICE1,FSELFDEFINEPRICE2,FSELFDEFINEPRICE3,FSELFDEFINEPRICE4,FPRICE1,FPRICE,FQTY,FQTYFROM,FQtyTo",,1,Add by Function SetSouceAction
-47378,1007006,5,FItemNumber,32768,4096,FAction,"FAUXPRICE,FAUXQTY,FAUXQTYFROM,FAUXQTYTO,FAUXPRICEINCLUDETAX,FAUXTAXPRICEDISCOUNT,FSELFDEFINEPRICE1,FSELFDEFINEPRICE2,FSELFDEFINEPRICE3,FSELFDEFINEPRICE4,FPRICE1,FPRICE,FQTY,FQTYFROM,FQtyTo",,2,Add by Function SetSouceAction
-47385,1007006,8,FItemNumber,0,4096,FLoadAction,"ME.FAuxClassID=0,FAuxPropID=1,FAuxPropID=0",,2,加载更新事件
-47379,1007006,8,FItemNumber,32768,4096,FAction,"ME.FAuxClassID=0,FAuxPropID=1,FAuxPropID=0",,3,值更新事件
-47380,1007006,100007,FItemNumber,32768,4096,FAction,"Para=[P_SystemType=1,P_CompanyType=1,P_CompanyID=FCustID,P_ICItemID=FItemNumber,P_TaxRateOption=0];Return=[P_TaxRate=FCess];BOSAction=[BSA_FillRowType=-1,BSA_ReadRowType=-1]",,4,值更新事件
-47381,1007006,100018,FItemNumber,0,4096,FAction,"FItemID=FItemNumber,FStockID=,FBathNo=,FAuxProperty=FAuxPropID,FUnitID=FUnitID,FSPID=,FKFDate=,FKFPeriod=",,5,值更新事件
-47382,1007006,2,FItemNumber,0,4096,FAction,FDecimal21=FCustID.F_123,,6,值更新事件
-47383,1007006,14,FItemNumber,0,4096,FAction,FAuxPrice,,7,值更新事件
-47386,1007006,1,FMapNumber,0,4096,FAction,FMAPNAME,,1,Add by Function SetSouceAction
-47387,1007006,3,FUnitID,0,4096,FAction,"FAuxQty,FAuxPrice,FAuxPriceIncludeTax,FAuxQtyFrom,FAuxQtyTo",,1,值更新事件
-45108,1007006,100024,mnuBasicPriceQuery,0,256,FBillAction,FItemNumber,,1,单据操作 Action 定义
-45109,1007006,100026,mnuFileExportBillTpl,0,256,FBillAction,,,1,单据操作 Action 定义
-45110,1007006,100027,mnuFileImportBill,0,256,FBillAction,,,1,单据操作 Action 定义
-45111,1007006,100005,mnuHistoryPriceQuery,0,256,FBillAction,"Para=[P_QueryType=1,P_CompanyID=FCustID,P_ICItemID=FItemNumber];BOSAction=[BSA_ReadRowType=-1]",,1,单据操作 Action 定义
-45112,1007006,100021,mnuSendEmail,0,256,FBillAction,FConfigureType=2;FEmpID,,1,单据操作 Action 定义
-45113,1007006,100021,mnuSendEmail,0,256,FListAction,FConfigureType=2;FEmpID,,1,序时簿操作 Action 定义
-45114,1007006,100021,mnuSendMessage,0,256,FBillAction,FConfigureType=1,,1,单据操作 Action 定义
-45115,1007006,100021,mnuSendMessage,0,256,FListAction,FConfigureType=1,,1,序时簿操作 Action 定义
-45116,1007006,100021,mnuSendSMS,0,256,FBillAction,FConfigureType=0;FEmpID,,1,单据操作 Action 定义
-45117,1007006,100021,mnuSendSMS,0,256,FListAction,FConfigureType=0;FEmpID,,1,序时簿操作 Action 定义
-45118,1007006,100019,mnuStockQuery,0,256,FBillAction,"FItemNumber=FMaterialNumber,=FMaterialName,=FMaterialModel,FAuxPropID=FAuxPropName,=FBatchNo,=FStockNumber,=FStockName,=FSPNumber,=FSPName,=FKFDate,=FKFPeriod,=FMaturityDate,=FBUUnitName,=FBUQty,FUnitID=FCUUnitName,FAuxQty=FCUUQty,=FSecUnitName,=FSecQty,=FConvRate,=FMTONo",,1,单据操作 Action 定义
-45119,1007006,100006,mnuStockStatusQuery,0,256,FBillAction,Para=[P_ICItemID=FItemNumber];BOSAction=[BSA_ReadRowType=-2],,1,单据操作 Action 定义
-45120,1007006,100025,mnuSupplyInfoQuery,0,256,FBillAction,"Para=[P_FCustID=FCustID,P_FItemID=FItemNumber];Return=[FCustID=R_FCustID,FItemNumber=R_FItemID,FUnitID=R_FUnitID,=R_FPrice,FCurrencyID=R_FCyID]",,1,单据操作 Action 定义
+"FID","FClassTypeID","FClassActionID","FObject","FDefineType","FSourceType","FSourceField","FAction","FExpression","FOrder","FDescription"
+"42888","1007006","22","EVENT","0","8192","FAfterLoadBillAction",,"@HadBusinessMultiCheck=1","1","Added by BOS UPDATE"
+"42765","1007006","2","FAmount","0","4096","FAction","FAuxPriceIncludeTax=FAmount*(1+FCess/100)/FAuxQty/(1-FDescount/100)",,"1","值更新事件"
+"42766","1007006","2","FAmount","0","4096","FAction","FAuxPrice=FAuxPriceIncludeTax/(1+FCess/100)",,"2","值更新事件"
+"42767","1007006","2","FAmount","0","4096","FAction","FAuxTaxPriceDiscount=FAuxPriceIncludeTax*(1-FDescount/100)",,"3","值更新事件"
+"42768","1007006","2","FAmount","0","4096","FAction","FDiscountAmt=FAuxQty*FAuxPriceIncludeTax*FDescount/100","@SysProfileDisCountIncludeTax=1","4","值更新事件"
+"42769","1007006","2","FAmount","0","4096","FAction","FDiscountAmt=FAuxQty*FAuxPriceIncludeTax/(100+FCess)*FDescount","@SysProfileDisCountIncludeTax=0","5","值更新事件"
+"42770","1007006","2","FAmount","0","4096","FAction","FTaxAmount=FAuxQty*FAuxPriceIncludeTax*(1-FDescount/100)/(1+FCess/100)*FCess/100",,"6","值更新事件"
+"42771","1007006","2","FAmount","0","4096","FAction","FAmountIncludeTax=FAmount+FTaxAmount",,"7","值更新事件"
+"42772","1007006","2","FAmount","0","4096","FAction","FPrice=FAuxPriceIncludeTax/(1+FCess/100)/FUnitID.FCoefficient",,"8","值更新事件"
+"42773","1007006","9","FAuxPrice","0","4096","FSaveRule","FAuxPrice<>0,CHS=单价不能等于零!@CHT=單價不能等於零!@EN=Unit Price can not be 0 !@,0",,"1","保存规则"
+"42774","1007006","2","FAuxPrice","0","4096","FAction","FDecimal21=FCustID.F_123",,"1","值更新事件"
+"42775","1007006","2","FAuxPrice","32768","4096","FAction","FAuxPriceIncludeTax=FAuxPrice*(1+FCess/100)",,"2","值更新事件"
+"42776","1007006","2","FAuxPrice","0","4096","FAction","FDecimal20=(FDecimal19+FDecimal18+FDecimal21)*FDecimal4/100*FDecimal6/365",,"3","值更新事件"
+"42777","1007006","2","FAuxPrice","0","4096","FAction","FDecimal22=FDecimal21+FDecimal20+FDecimal19+FDecimal18",,"4","值更新事件"
+"42778","1007006","2","FAuxPrice","0","4096","FAction","FDescount=100-100*FDecimal22/(1-FDecimal14/100)*(1+FCess/100)/(1-FDecimal1/100)/FAuxPriceIncludeTax/FDecimal5",,"5","值更新事件"
+"42779","1007006","2","FAuxPrice","32768","4096","FAction","FAuxTaxPriceDiscount=FAuxPriceIncludeTax*(1-FDescount/100)",,"6","值更新事件"
+"42780","1007006","2","FAuxPrice","32768","4096","FAction","FAmount=FAuxQty*FAuxPriceIncludeTax*(1-FDescount/100)/(1+FCess/100)",,"7","值更新事件"
+"42781","1007006","2","FAuxPrice","32768","4096","FAction","FDiscountAmt=FAuxQty*FAuxPriceIncludeTax*FDescount/100","@SysProfileDisCountIncludeTax=1","8","值更新事件"
+"42782","1007006","2","FAuxPrice","32768","4096","FAction","FDiscountAmt=FAuxQty*FAuxPriceIncludeTax/(100+FCess)*FDescount","@SysProfileDisCountIncludeTax=0","9","值更新事件"
+"42783","1007006","2","FAuxPrice","32768","4096","FAction","FTaxAmount=FAuxQty*FAuxPriceIncludeTax*(1-FDescount/100)/(1+FCess/100)*FCess/100",,"10","值更新事件"
+"42784","1007006","2","FAuxPrice","32768","4096","FAction","FAmountIncludeTax=FAmount+FTaxAmount",,"11","值更新事件"
+"42785","1007006","2","FAuxPrice","32768","4096","FAction","FPrice=FAuxPrice/FUnitID.FCoefficient",,"12","值更新事件"
+"42786","1007006","2","FAuxPrice","0","4096","FAction","FDecimal8=FAuxPriceIncludeTax*FDecimal5*(1-FDecimal1/100)/(1+FCess/100)-FDecimal22",,"13","值更新事件"
+"42787","1007006","2","FAuxPrice","0","4096","FAction","FDecimal9=100-100*FDecimal22*(1+FCess/100)/(FAuxPriceIncludeTax*(1-FDecimal1/100)*FDecimal5)",,"14","值更新事件"
+"42788","1007006","2","FAuxPrice","0","4096","FAction","FDecimal7=FAuxPriceIncludeTax/(1-FDecimal/100)",,"15","值更新事件"
+"42789","1007006","2","FAuxPrice","0","4096","FAction","FDecimal15=FAuxPriceIncludeTax*(1-FDescount/100)/(1-FDecimal/100)
+",,"16","值更新事件"
+"42790","1007006","14","FAuxPrice","0","4096","FAction","FDecimal11",,"17","值更新事件"
+"42791","1007006","2","FAuxPriceIncludeTax","32768","4096","FAction","FAuxPrice=FAuxPriceIncludeTax/(1+FCess/100)",,"1","值更新事件"
+"42792","1007006","2","FAuxPriceIncludeTax","0","4096","FAction","FDecimal20=(FDecimal18+FDecimal19+FDecimal21)*FDecimal4/100*FDecimal6/365
+",,"2","值更新事件"
+"42793","1007006","2","FAuxPriceIncludeTax","0","4096","FAction","FDecimal22=FDecimal18+FDecimal19+FDecimal20+FDecimal21",,"3","值更新事件"
+"42794","1007006","2","FAuxPriceIncludeTax","0","4096","FAction","FDescount=100-100*FDecimal22/(1-FDecimal14/100)*(1+FCess/100)/(1-FDecimal1/100)/FAuxPriceIncludeTax/FDecimal5
+",,"4","值更新事件"
+"42795","1007006","2","FAuxPriceIncludeTax","32768","4096","FAction","FAuxTaxPriceDiscount=FAuxPriceIncludeTax*(1-FDescount/100)",,"5","值更新事件"
+"42796","1007006","2","FAuxPriceIncludeTax","32768","4096","FAction","FAmount=FAuxQty*FAuxPriceIncludeTax*(1-FDescount/100)/(1+FCess/100)",,"6","值更新事件"
+"42797","1007006","2","FAuxPriceIncludeTax","32768","4096","FAction","FDiscountAmt=FAuxQty*FAuxPriceIncludeTax*FDescount/100","@SysProfileDisCountIncludeTax=1","7","值更新事件"
+"42798","1007006","2","FAuxPriceIncludeTax","32768","4096","FAction","FDiscountAmt=FAuxQty*FAuxPriceIncludeTax/(100+FCess)*FDescount","@SysProfileDisCountIncludeTax=0","8","值更新事件"
+"42799","1007006","2","FAuxPriceIncludeTax","32768","4096","FAction","FTaxAmount=FAuxQty*FAuxPriceIncludeTax*(1-FDescount/100)/(1+FCess/100)*FCess/100",,"9","值更新事件"
+"42800","1007006","2","FAuxPriceIncludeTax","32768","4096","FAction","FAmountIncludeTax=FAmount+FTaxAmount",,"10","值更新事件"
+"42801","1007006","2","FAuxPriceIncludeTax","32768","4096","FAction","FPrice=FAuxPriceIncludeTax/(1+FCess/100)/FUnitID.FCoefficient",,"11","值更新事件"
+"42802","1007006","2","FAuxPriceIncludeTax","0","4096","FAction","FDecimal8=FAuxPriceIncludeTax*FDecimal5*(1-FDecimal1/100)/(1+FCess/100)-FDecimal22",,"12","值更新事件"
+"42803","1007006","2","FAuxPriceIncludeTax","0","4096","FAction","FDecimal9=100-100*FDecimal22*(1+FCess/100)/(FAuxPriceIncludeTax*(1-FDecimal1/100)*FDecimal5)",,"13","值更新事件"
+"42804","1007006","2","FAuxPriceIncludeTax","0","4096","FAction","FDecimal7=FAuxPriceIncludeTax/(1-FDecimal/100)",,"14","值更新事件"
+"42805","1007006","2","FAuxPriceIncludeTax","0","4096","FAction","FDecimal15=FAuxPriceIncludeTax*(1-FDescount/100)/(1-FDecimal/100)",,"15","值更新事件"
+"42806","1007006","14","FAuxPriceIncludeTax","0","4096","FAction","FDecimal11",,"16","值更新事件"
+"42807","1007006","9","FAuxQty","0","4096","FSaveRule","FAuxQty=1,CHS=产品的数量必须是1。@CHT=產品的數量必須是1。@EN=the Quantity of Product must be one.@,0",,"1","保存规则"
+"42808","1007006","2","FAuxQty","32768","4096","FAction","FQty=FAuxQty*FUnitID.FCoefficient",,"1","值更新事件"
+"42809","1007006","2","FAuxQty","0","4096","FAction","FDecimal21=FCustID.F_123",,"2","值更新事件"
+"42810","1007006","14","FAuxQty","0","4096","FAction","FDecimal23,FDecimal24",,"3","值更新事件"
+"42811","1007006","2","FAuxQty","32768","4096","FAction","FAmount=FAuxQty*FAuxPriceIncludeTax*(1-FDescount/100)/(1+FCess/100)",,"4","值更新事件"
+"42812","1007006","2","FAuxQty","32768","4096","FAction","FDiscountAmt=FAuxQty*FAuxPriceIncludeTax*FDescount/100","@SysProfileDisCountIncludeTax=1","5","值更新事件"
+"42813","1007006","2","FAuxQty","32768","4096","FAction","FDiscountAmt=FAuxQty*FAuxPriceIncludeTax/(100+FCess)*FDescount","@SysProfileDisCountIncludeTax=0","6","值更新事件"
+"42814","1007006","2","FAuxQty","32768","4096","FAction","FTaxAmount=FAuxQty*FAuxPriceIncludeTax*(1-FDescount/100)/(1+FCess/100)*FCess/100",,"7","值更新事件"
+"42815","1007006","2","FAuxQty","32768","4096","FAction","FAmountIncludeTax=FAmount+FTaxAmount",,"8","值更新事件"
+"42816","1007006","2","FAuxQtyFrom","0","4096","FAction","FQtyFrom=FAuxQtyFrom*FUnitID.FCoefficient",,"1","值更新事件"
+"42817","1007006","2","FAuxQtyTo","0","4096","FAction","FQtyTo=FAuxQtyTo*FUnitID.FCoefficient",,"1","值更新事件"
+"42818","1007006","1","FBase","0","4096","FAction","FBaseProperty5",,"1","Add by Function SetSouceAction"
+"42819","1007006","1","FBase3","0","4096","FAction","FDecimal4=F_101",,"1","值更新事件"
+"42820","1007006","100030","FBase4","0","4096","FAction","FBase4,FCurrencyID,FDate,FDecimal5",,"1","值更新事件"
+"42821","1007006","1","FBase5","0","4096","FAction","FBase=F_107,FBaseProperty5,FDecimal17=F_110",,"1","值更新事件"
+"42822","1007006","2","FBase5","0","4096","FAction","FDecimal16=FItemNumber.FSize*100000/12000","ME.F_105=125","2","值更新事件"
+"42823","1007006","2","FBase5","0","4096","FAction","FDecimal16=FItemNumber.FSize","ME.F_105=207266","3","值更新事件"
+"42824","1007006","2","FBase5","0","4096","FAction","FDecimal18=FDecimal16*FDecimal17",,"4","值更新事件"
+"42825","1007006","14","FBase5","0","4096","FAction","FAuxPrice",,"5","值更新事件"
+"42826","1007006","2","FCess","32768","4096","FAction","FAuxPrice=FAuxPriceIncludeTax/(1+FCess/100)","@SysProfileIsTaxInPrc=1","1","值更新事件"
+"42827","1007006","2","FCess","0","4096","FAction","FAuxPriceIncludeTax=FAuxPrice*(1+FCess/100)","@SysProfileIsTaxInPrc=0","2","值更新事件"
+"42828","1007006","2","FCess","0","4096","FAction","FAuxTaxPriceDiscount=FAuxPriceIncludeTax*(1-FDescount/100)",,"3","值更新事件"
+"42829","1007006","2","FCess","32768","4096","FAction","FPrice=FAuxPriceIncludeTax/(1+FCess/100)/FUnitID.FCoefficient",,"4","值更新事件"
+"42830","1007006","2","FCess","32768","4096","FAction","FAmount=FAuxQty*FAuxPriceIncludeTax*(1-FDescount/100)/(1+FCess/100)",,"5","值更新事件"
+"42831","1007006","2","FCess","32768","4096","FAction","FTaxAmount=FAuxQty*FAuxPriceIncludeTax*(1-FDescount/100)/(1+FCess/100)*FCess/100",,"6","值更新事件"
+"42832","1007006","2","FCess","32768","4096","FAction","FAmountIncludeTax=FAmount+FTaxAmount",,"7","值更新事件"
+"42833","1007006","16","FCheckBox","0","4096","FAction","FCheckBox,FCheckBox1,FDecimal14",,"1","值更新事件"
+"42834","1007006","2","FCheckBox","0","4096","FAction","FDecimal14=FDecimal13","FCheckBox=1","2","值更新事件"
+"42835","1007006","2","FCheckBox","0","4096","FAction","FDescount=100-100*FDecimal22/(1-FDecimal14/100)*(1+FCess/100)/(1-FDecimal1/100)/FAuxPriceIncludeTax/FDecimal5","FCheckBox=1","3","值更新事件"
+"42836","1007006","2","FCheckBox","0","4096","FAction","FDiscountAmt=FAuxQty*FAuxPriceIncludeTax*FDescount/100","FCheckBox=1","4","值更新事件"
+"42837","1007006","2","FCheckBox","0","4096","FAction","FAmountIncludeTax=FDecimal10","FCheckBox=1","5","值更新事件"
+"42838","1007006","2","FCheckBox","0","4096","FAction","FAuxTaxPriceDiscount=FDecimal10","FCheckBox=1","6","值更新事件"
+"42839","1007006","2","FCheckBox","0","4096","FAction","FDecimal15=FDecimal11","FCheckBox=1","7","值更新事件"
+"42840","1007006","14","FCheckBox","0","4096","FAction","FDecimal23,FDecimal24,FAuxPriceIncludeTax","(FCheckBox=0) and (FCheckBox1=0)","8","值更新事件"
+"42841","1007006","16","FCheckBox1","0","4096","FAction","FCheckBox1,FCheckBox,FDecimal14",,"1","值更新事件"
+"42842","1007006","2","FCheckBox1","0","4096","FAction","FDecimal14=FDecimal9","FCheckBox1=1","2","值更新事件"
+"42843","1007006","2","FCheckBox1","0","4096","FAction","FDescount=100-100*FDecimal22/(1-FDecimal14/100)*(1+FCess/100)/(1-FDecimal1/100)/FAuxPriceIncludeTax/FDecimal5","FCheckBox1=1","3","值更新事件"
+"42844","1007006","2","FCheckBox1","0","4096","FAction","FDiscountAmt=FAuxQty*FAuxPriceIncludeTax*FDescount/100","FCheckBox1=1","4","值更新事件"
+"42845","1007006","2","FCheckBox1","0","4096","FAction","FAmountIncludeTax=FAuxPriceIncludeTax","FCheckBox1=1","5","值更新事件"
+"42846","1007006","2","FCheckBox1","0","4096","FAction","FAuxTaxPriceDiscount=FAuxPriceIncludeTax
+","FCheckBox1=1","6","值更新事件"
+"42847","1007006","2","FCheckBox1","0","4096","FAction","FDecimal15=FDecimal7","FCheckBox1=1","7","值更新事件"
+"42848","1007006","14","FCheckBox1","0","4096","FAction","FDecimal23,FDecimal24,FAuxPriceIncludeTax","FCheckBox=0 and FCheckBox1=0","8","值更新事件"
+"42849","1007006","14","FCurrencyID","0","4096","FAction","FBase4,FDecimal23,FDecimal24",,"1","值更新事件"
+"42850","1007006","1","FCustID","32768","4096","FAction","FCURRENCYID=FCYID,FBASEPROPERTY2","ME.FCyID<>0","1","值更新事件"
+"42851","1007006","1","FCustID","32768","4096","FAction","FPayCondition=FPayCondition,FDecimal2=F_116,FDecimal6=F_122,FDecimal=F_121,FDecimal1=F_115,FBase2=F_124",,"2","值更新事件"
+"42852","1007006","1","FCustID","32768","4096","FAction","FDEPTID=FDEPARTMENT,FEMPID=FEMPLOYEE",,"3","值更新事件"
+"42853","1007006","100007","FCustID","32768","4096","FAction","Para=[P_SystemType=1,P_CompanyID=FCustID,P_ICItemID=FItemNumber,P_TaxRateOption=0];Return=[P_TaxRate=FCess];BOSAction=[BSA_FillRowType=-2,BSA_ReadRowType=-2]",,"4","值更新事件"
+"42854","1007006","2","FDecimal10","0","4096","FAction","FDecimal11=FDecimal10/(1-FDecimal/100)",,"1","值更新事件"
+"42855","1007006","2","FDecimal11","0","4096","FAction","FDecimal12=FDecimal11*FDecimal5*(1-FDecimal/100)*(1-FDecimal1/100)/(1+FCess/100)-FDecimal22",,"1","值更新事件"
+"42856","1007006","2","FDecimal11","0","4096","FAction","FDecimal13=100-100*FDecimal22*(1+FCess/100)/(FDecimal11*(1-FDecimal/100)*(1-FDecimal1/100)*FDecimal5)",,"2","值更新事件"
+"42857","1007006","2","FDecimal11","0","4096","FAction","FDecimal10=FDecimal11*(1-FDecimal/100)",,"3","值更新事件"
+"42858","1007006","16","FDecimal14","32768","4096","FAction","FDecimal14,FCheckBox,FCheckBox1",,"1","值更新事件"
+"42859","1007006","2","FDecimal14","0","4096","FAction","FDescount=100-100*FDecimal22/(1-FDecimal14/100)*(1+FCess/100)/(1-FDecimal1/100)/FAuxPriceIncludeTax/FDecimal5",,"2","值更新事件"
+"42860","1007006","2","FDecimal14","0","4096","FAction","FDiscountAmt=FAuxQty*FAuxPriceIncludeTax*FDescount/100",,"3","值更新事件"
+"42861","1007006","2","FDecimal14","0","4096","FAction","FAuxTaxPriceDiscount=FAuxPriceIncludeTax*(1-FDescount/100)",,"4","值更新事件"
+"42862","1007006","2","FDecimal14","0","4096","FAction","FDecimal15=FAuxPriceIncludeTax*(1-FDescount/100)/(1-FDecimal/100)",,"5","值更新事件"
+"42863","1007006","14","FDecimal14","0","4096","FAction","FAuxPrice",,"6","值更新事件"
+"42864","1007006","14","FDecimal2","0","4096","FAction","FDecimal23,FDecimal24",,"1","值更新事件"
+"42865","1007006","2","FDecimal23","0","4096","FAction","FDecimal14=FDecimal2","FCurrencyID=1 and FDecimal2>=FDecimal23","1","值更新事件"
+"42866","1007006","2","FDecimal23","0","4096","FAction","FDecimal14=FDecimal23","FCurrencyID=1 and FDecimal2<FDecimal23","2","值更新事件"
+"42867","1007006","2","FDecimal24","0","4096","FAction","FDecimal14=FDecimal2","FCurrencyID=1000 and FDecimal2>=FDecimal24","1","值更新事件"
+"42868","1007006","2","FDecimal24","0","4096","FAction","FDecimal14=FDecimal24","FCurrencyID=1000 and FDecimal2<FDecimal24","2","值更新事件"
+"42869","1007006","14","FDecimal4","0","4096","FAction","FAuxPrice",,"1","值更新事件"
+"42870","1007006","14","FDecimal6","0","4096","FAction","FAuxPrice",,"1","值更新事件"
+"42871","1007006","2","FDescount","0","4096","FAction","FAuxTaxPriceDiscount=FAuxPriceIncludeTax*(1-FDescount/100)",,"1","值更新事件"
+"42872","1007006","2","FDescount","0","4096","FAction","FAmount=FAuxQty*FAuxPriceIncludeTax*(1-FDescount/100)/(1+FCess/100)",,"2","值更新事件"
+"42873","1007006","2","FDescount","0","4096","FAction","FDiscountAmt=FAuxQty*FAuxPriceIncludeTax*FDescount/100","@SysProfileDisCountIncludeTax=1","3","值更新事件"
+"42874","1007006","2","FDescount","0","4096","FAction","FDiscountAmt=FAuxQty*FAuxPriceIncludeTax/(100+FCess)*FDescount","@SysProfileDisCountIncludeTax=0","4","值更新事件"
+"42875","1007006","2","FDescount","0","4096","FAction","FTaxAmount=FAuxQty*FAuxPriceIncludeTax*(1-FDescount/100)/(1+FCess/100)*FCess/100",,"5","值更新事件"
+"42876","1007006","2","FDescount","0","4096","FAction","FAmountIncludeTax=FAmount+FTaxAmount",,"6","值更新事件"
+"42877","1007006","1","FEmpID","0","4096","FAction","FBASEPROPERTY3,FBaseProperty4",,"1","Add by Function SetSouceAction"
+"42878","1007006","9","FExchangeRate","0","4096","FSaveRule","FExchangeRate>0,CHS=汇率必须大于0!@CHT=匯率必須大於0!@EN=Exchange rate must be greater than 0 !@,0",,"1","保存规则"
+"42879","1007006","1","FItemNumber","32768","4096","FAction","FITEMNAME,FMODEL,FBASEUNIT,FUNITID=FSALEUNITID,FBASEPROPERTY,FBASEPROPERTY1,FDECIMAL19=FSTANDARDCOST,FDECIMAL23=F_171,FDECIMAL24=F_175",,"1","Add by Function SetSouceAction"
+"42884","1007006","5","FItemNumber","0","4096","FLoadAction","FAUXQTY,FPRICE1,FAUXPRICE,FAUXPRICEINCLUDETAX,FAUXTAXPRICEDISCOUNT,FAUXQTYFROM,FAUXQTYTO,FSELFDEFINEPRICE1,FSELFDEFINEPRICE2,FSELFDEFINEPRICE3,FSELFDEFINEPRICE4,FPRICE,FQTY,FQTYFROM,FQtyTo",,"1","Add by Function SetSouceAction"
+"42880","1007006","5","FItemNumber","32768","4096","FAction","FAUXQTY,FPRICE1,FAUXPRICE,FAUXPRICEINCLUDETAX,FAUXTAXPRICEDISCOUNT,FAUXQTYFROM,FAUXQTYTO,FSELFDEFINEPRICE1,FSELFDEFINEPRICE2,FSELFDEFINEPRICE3,FSELFDEFINEPRICE4,FPRICE,FQTY,FQTYFROM,FQtyTo",,"2","Add by Function SetSouceAction"
+"42885","1007006","8","FItemNumber","0","4096","FLoadAction","ME.FAuxClassID=0,FAuxPropID=1,FAuxPropID=0",,"2","加载更新事件"
+"42881","1007006","8","FItemNumber","32768","4096","FAction","ME.FAuxClassID=0,FAuxPropID=1,FAuxPropID=0",,"3","值更新事件"
+"42882","1007006","100007","FItemNumber","32768","4096","FAction","Para=[P_SystemType=1,P_CompanyType=0,P_CompanyID=FCustID,P_ICItemID=FItemNumber];Return=[P_TaxRate=FCess];BOSAction=[BSA_FillRowType=-1,BSA_ReadRowType=-1]",,"4","值更新事件"
+"42883","1007006","100018","FItemNumber","0","4096","FAction","FItemID=FItemNumber,FStockID=,FBathNo=,FAuxProperty=FAuxPropID,FUnitID=FUnitID,FSPID=,FKFDate=,FKFPeriod=",,"5","值更新事件"
+"42886","1007006","1","FMapNumber","0","4096","FAction","FMAPNAME",,"1","Add by Function SetSouceAction"
+"42887","1007006","3","FUnitID","0","4096","FAction","FAuxQty,FAuxPrice,FAuxPriceIncludeTax,FAuxQtyFrom,FAuxQtyTo",,"1","值更新事件"
+"20593","1007006","100024","mnuBasicPriceQuery","0","256","FBillAction","FItemNumber",,"1","单据操作 Action 定义"
+"20594","1007006","100026","mnuFileExportBillTpl","0","256","FBillAction",,,"1","单据操作 Action 定义"
+"20595","1007006","100027","mnuFileImportBill","0","256","FBillAction",,,"1","单据操作 Action 定义"
+"20596","1007006","100005","mnuHistoryPriceQuery","0","256","FBillAction","Para=[P_QueryType=1,P_CompanyID=FCustID,P_ICItemID=FItemNumber];BOSAction=[BSA_ReadRowType=-1]",,"1","单据操作 Action 定义"
+"20597","1007006","100021","mnuSendEmail","0","256","FBillAction","FConfigureType=2;FEmpID",,"1","单据操作 Action 定义"
+"20598","1007006","100021","mnuSendEmail","0","256","FListAction","FConfigureType=2;FEmpID",,"1","序时簿操作 Action 定义"
+"20599","1007006","100021","mnuSendMessage","0","256","FBillAction","FConfigureType=1",,"1","单据操作 Action 定义"
+"20600","1007006","100021","mnuSendMessage","0","256","FListAction","FConfigureType=1",,"1","序时簿操作 Action 定义"
+"20601","1007006","100021","mnuSendSMS","0","256","FBillAction","FConfigureType=0;FEmpID",,"1","单据操作 Action 定义"
+"20602","1007006","100021","mnuSendSMS","0","256","FListAction","FConfigureType=0;FEmpID",,"1","序时簿操作 Action 定义"
+"20603","1007006","100019","mnuStockQuery","0","256","FBillAction","FItemNumber=FMaterialNumber,=FMaterialName,=FMaterialModel,FAuxPropID=FAuxPropName,=FBatchNo,=FStockNumber,=FStockName,=FSPNumber,=FSPName,=FKFDate,=FKFPeriod,=FMaturityDate,=FBUUnitName,=FBUQty,FUnitID=FCUUnitName,FAuxQty=FCUUQty,=FSecUnitName,=FSecQty,=FConvRate,=FMTONo",,"1","单据操作 Action 定义"
+"20604","1007006","100006","mnuStockStatusQuery","0","256","FBillAction","Para=[P_ICItemID=FItemNumber];BOSAction=[BSA_ReadRowType=-2]",,"1","单据操作 Action 定义"
+"20605","1007006","100025","mnuSupplyInfoQuery","0","256","FBillAction","Para=[P_FCustID=FCustID,P_FItemID=FItemNumber];Return=[FCustID=R_FCustID,FItemNumber=R_FItemID,FUnitID=R_FUnitID,=R_FPrice,FCurrencyID=R_FCyID]",,"1","单据操作 Action 定义"
+

@@ -1,13 +1,13 @@
 --ais20170110083702.dbo.
 --ais20170714081229.dbo.
---t_pa_itemclass.fiteclassid  = 0 µÄÊÇÏµÍ³Ô¤ÖÃµÄ,t_pa_item.fitemid = 0 µÄÒ²ÊÇÏµÍ³Ô¤ÖÃµÄ
---²»ÄÜÉ¾³ı
+--t_pa_itemclass.fiteclassid  = 0 ï¿½ï¿½ï¿½ï¿½ÏµÍ³Ô¤ï¿½Ãµï¿½,t_pa_item.fitemid = 0 ï¿½ï¿½Ò²ï¿½ï¿½ÏµÍ³Ô¤ï¿½Ãµï¿½
+--ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½
 use AIS20091217151735
 select * from t_pa_itemclass
 --insert into t_pa_itemclass select * from ais20170110083702.dbo.t_pa_itemclass where FItemClassID > 0
 select * from t_pa_item -- delete from t_pa_item where fitemid > 0
---t_pa_itempropdescÊÇÏµÍ³Ô¤ÖÃµÄÒ»Ğ©ĞÅÏ¢£¬°üÀ¨¹¤×ÊÀà±ğµÈ£¬É¾³ıºó£¬ĞÂ½¨¹¤×ÊÀà±ğºÍÉèÖÃÖ°Ô±¡¢ÉèÖÃ²¿ÃÅÊ±¶¼»á³ö´í
---t_pa_itempropdesc Ò²¼ÇÂ¼ÁËÓÃ»§ÉèÖÃµÄÒ»Ğ©ĞÅÏ¢£¬ÔÚÉ¾³ıµÄÊ±ºò£¬Òª×¢ÒâÇø±ğ
+--t_pa_itempropdescï¿½ï¿½ÏµÍ³Ô¤ï¿½Ãµï¿½Ò»Ğ©ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È£ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½Â½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö°Ô±ï¿½ï¿½ï¿½ï¿½ï¿½Ã²ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+--t_pa_itempropdesc Ò²ï¿½ï¿½Â¼ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½Ãµï¿½Ò»Ğ©ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Òª×¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 select * from t_pa_itempropdesc where FItemClassID = 3 and FName like '%Ö°%'
 
 select * from ais20170110083702.dbo.t_pa_itempropdesc
@@ -17,15 +17,15 @@ select * into t_pa_personal from ais20170711153728.dbo.t_pa_personal where 1=2
 select FPositionIndex,* from t_PA_Personal
 select * into t_pa_personal from ais20170110083702.dbo.t_pa_personal where 1=2
 --truncate table t_pa_personal
---²ÎÕÕÔ­±íÉèÖÃ·Ç¿Õ×Ö¶ÎµÄÄ¬ÈÏÖµ¡£
---T_PA_ITEMREF ºÍ T_PA_ITEMREFTYPE ÏµÍ³Ò²Ô¤ÖÃÁËÒ»Ğ©ÄÚÈİ£¬²»ÄÜÈ«²¿É¾³ı£¬·ñÔòÔÚÉèÖÃÖ°¹¤
---Ê±£¬»áÌáÊ¾¡±Ê¹ÓÃNULL ÎŞĞ§¡°
+--ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½ï¿½Ã·Ç¿ï¿½ï¿½Ö¶Îµï¿½Ä¬ï¿½ï¿½Öµï¿½ï¿½
+--T_PA_ITEMREF ï¿½ï¿½ T_PA_ITEMREFTYPE ÏµÍ³Ò²Ô¤ï¿½ï¿½ï¿½ï¿½Ò»Ğ©ï¿½ï¿½ï¿½İ£ï¿½ï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö°ï¿½ï¿½
+--Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Ê¹ï¿½ï¿½NULL ï¿½ï¿½Ğ§ï¿½ï¿½
 select * from t_PA_ItemRef --truncate table t_pa_itemref
 select * from t_pa_itemreftype --truncate table t_pa_itemreftype
 select * from ais20170110083702.dbo.t_pa_itemreftype
 --insert into t_PA_ItemRefType select * from ais20170110083702.dbo.t_pa_itemreftype
 --insert into t_PA_ItemRef select * from ais20170110083702.dbo.t_pa_itemref
---×Ô¶¨ÒåÖ°¹¤¹¤×ÊÏîÄ¿±í£¬FFIELDTYPE =-1 µÄÊÇÏµÍ³Ô¤ÁôµÄ,×÷¹ØÁªÓÃ¡£
+--ï¿½Ô¶ï¿½ï¿½ï¿½Ö°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½FFIELDTYPE =-1 ï¿½ï¿½ï¿½ï¿½ÏµÍ³Ô¤ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¡ï¿½
 delete from t_PAItem where FFieldType <> -1
 select * from ais20170714081229.dbo.t_paitem
 
@@ -37,8 +37,8 @@ select * from t_paitem
 delete from t_PAItem where FItemid = 1071
 
 
---µ÷Õû¹¤×ÊÖ°¹¤ÏÔÊ¾Ë³Ğò£¬ĞÂÔö×Ô¶¨ÒåµÄPROPIDºÍÔ­ÓĞµÄ¡°¶Ôµ÷¡±,²»¶Ôµ÷µÄ»°£¬²»ÄÜÔÚÇ°¶ËÔÙÔö¼Ó×Ô¶¨Òå×Ö¶Î
---fopopid > 100 ÔÚERPÇ°¶Ë¿ÉÒÔÉ¾³ı
+--ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö°ï¿½ï¿½ï¿½ï¿½Ê¾Ë³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½PROPIDï¿½ï¿½Ô­ï¿½ĞµÄ¡ï¿½ï¿½Ôµï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½Ôµï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½Ö¶ï¿½
+--fopopid > 100 ï¿½ï¿½ERPÇ°ï¿½Ë¿ï¿½ï¿½ï¿½É¾ï¿½ï¿½
 select * from t_pa_itempropdesc where FItemClassID = 3 
 select * from ais20170714081229.dbo.t_pa_itempropdesc where fitemclassid = 3 
 update t_PA_ItemPropDesc set FPropID = 9 where FItemClassID = 3 and FPropID = 103
@@ -52,47 +52,47 @@ update t_PA_ItemPropDesc set FPropID = 16 where FItemClassID = 3 and FPropID = 1
 update t_PA_ItemPropDesc set FPropID = 17 where FItemClassID = 3 and FPropID = 102
 update t_PA_ItemPropDesc set FPropID = 18 where FItemClassID = 3 and FPropID = 33
 update t_PA_ItemPropDesc set FPropID = 19 where FItemClassID = 3 and FPropID = 35
---²¿ÃÅ£¬Èë³§Ê±¼ä£¬ÀëÖ°Ê±¼ä£¬Ö°Îñ£¬Ö°ÎñµÈ¼¶£¬Ö°µÈÃû³Æ£¬
+--ï¿½ï¿½ï¿½Å£ï¿½ï¿½ë³§Ê±ï¿½ä£¬ï¿½ï¿½Ö°Ê±ï¿½ä£¬Ö°ï¿½ï¿½Ö°ï¿½ï¿½È¼ï¿½ï¿½ï¿½Ö°ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½
 update t_PA_ItemPropDesc set FPropID = 3 where FItemClassID = 3 and FPropID = 68
 
 update t_PA_ItemPropDesc set FPropID = FPropID+33 where FItemClassID = 3 and FPropID >69 and FPropID < 90
 select * from t_pa_itempropdesc where FItemClassID = 3 
---×Ô¶¨Òå×Ö¶ÎÄ¬ÈÏÖµ
+--ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½Ö¶ï¿½Ä¬ï¿½ï¿½Öµ
 --update t_PA_ItemPropDesc set FDefaultValue = 0 where FItemClassID = 3 and FPropID >7 and FPropID <16
---×Ö¶ÎÀàĞÍ
+--ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½
 update t_PA_ItemPropDesc set FDataType=5,FActualType = 5
 where fitemclassid = 3 and FPropID = 8
 
---µ¼Èë¹¤×ÊÖ°Ô±ĞÅÏ¢
-/*Ö°µÈÃû³Æ	FGradeName
-Ö°µÈ	FPositionIndex
-ÌØÊâ¹¤Áä	F_102
-Ö´ĞĞ¹¤×Ê	F_103
-»ù±¾¹¤×Ê	F_104
-Í¨Ñ¶²¹Ìù	F_105
-È¼ÓÍ²¹Ìù	F_106
-½»Í¨²¹Ìù	F_107
-¹¤×ÊÀàĞÍ	F_108
-¹¤Áä¹¤×Ê±ê×¼ F_109
+--ï¿½ï¿½ï¿½ë¹¤ï¿½ï¿½Ö°Ô±ï¿½ï¿½Ï¢
+/*Ö°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	FGradeName
+Ö°ï¿½ï¿½	FPositionIndex
+ï¿½ï¿½ï¿½â¹¤ï¿½ï¿½	F_102
+Ö´ï¿½Ğ¹ï¿½ï¿½ï¿½	F_103
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	F_104
+Í¨Ñ¶ï¿½ï¿½ï¿½ï¿½	F_105
+È¼ï¿½Í²ï¿½ï¿½ï¿½	F_106
+ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½	F_107
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	F_108
+ï¿½ï¿½ï¿½ä¹¤ï¿½Ê±ï¿½×¼ F_109
 */
 update t_pa_personal set 
-	FPositionIndex =isnull(c.Ö°µÈ,0)
-	,F_102 =c.ÌØÊâ¹¤Áä
-	,F_103 =c.Ö´ĞĞ¹¤×Ê	
-	,F_104=c.»ù±¾¹¤×Ê	
-	,F_105=c.Í¨Ñ¶²¹Ìù	
-	,F_106=c.È¼ÓÍ²¹Ìù	
-	,F_107=c.½»Í¨²¹Ìù	
-	,F_108=c.¹¤×ÊÀàĞÍ	
+	FPositionIndex =isnull(c.Ö°ï¿½ï¿½,0)
+	,F_102 =c.ï¿½ï¿½ï¿½â¹¤ï¿½ï¿½
+	,F_103 =c.Ö´ï¿½Ğ¹ï¿½ï¿½ï¿½	
+	,F_104=c.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	
+	,F_105=c.Í¨Ñ¶ï¿½ï¿½ï¿½ï¿½	
+	,F_106=c.È¼ï¿½Í²ï¿½ï¿½ï¿½	
+	,F_107=c.ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½	
+	,F_108=c.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	
 from t_pa_personal a join t_PA_Item b on a.FItemID = b.FItemID and b.FItemClassID = 3 
-join t_pa_personal11$ c on c.Ö°Ô±´úÂë=b.fnumber
-/*ÉèÖÃ¹¤×ÊÏîÄ¿*/
+join t_pa_personal11$ c on c.Ö°Ô±ï¿½ï¿½ï¿½ï¿½=b.fnumber
+/*ï¿½ï¿½ï¿½Ã¹ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿*/
 select * from t_panewdata
-/*µ¼ÈëEXCELÊı¾İ
-ÎÄ¼ş-¡µÒıÈë
-µ¼ÈëºóÒª±£´æ*/
-/*µ¼ÈëERP¼Æ¼ş¹¤×Ê
-±à¼­-¡µÒıÈë¼Æ¼ş¹¤×Ê
-µ¼ÈëºóÒª±£´æ*/
-/*¼ÆËã·ÇÏµÊı¹¤×Ê*/
+/*ï¿½ï¿½ï¿½ï¿½EXCELï¿½ï¿½ï¿½ï¿½
+ï¿½Ä¼ï¿½-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½*/
+/*ï¿½ï¿½ï¿½ï¿½ERPï¿½Æ¼ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½à¼­-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½*/
+/*ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 select * from t_PANewData

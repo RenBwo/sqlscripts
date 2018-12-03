@@ -1,8 +1,22 @@
 /* 
  * date:		2018/11/05
  * author:		renbo
- * description:	取消2018/08/18变更1
- * 				增加运输类型ftrantype字段
+ * description:	
+ * 1、取消2018/08/18变更1
+ * 2、增加 运费标准ftrantype字段
+ * 3、美元小数位数 含质保金 2位，扣除质保金 4位，
+ * 人民币-零部件 ：
+ * 集流管：01.09
+ * 储液器：01.40
+ * 压板：01.09
+ * 支架：01.11
+ * 集流管组件：01.10
+ * 小数位数2位，
+ * 人民币-其他 小数位数0位
+ * 4、接受客户目标价
+ * 5、维持成交价格
+ * 6、盛部 失效客户价格也要 20181109 
+ * 
  * 
  * DATA:		2018/11/02
  * AUTHOR:		renbo
@@ -84,24 +98,28 @@ BEGIN
 				,@fUncountRateReturn    decimal(28,10) --返点%
 				,@fqutoeExchRate        decimal(28,10) --报价汇率x.xxx
 				,@FBillMakeDate 		datetime		--单据作成日期
-			
+				,@isSubAssy             int        		--是否是零部件，零部件人民币价格保留小数点后两位
+				,@acceptCustPrice		int				--接受客户目标价
+				,@remainNowPrice		int 			--保持现在的成交价格
+				,@FpricByCustom			decimal(28,10)	--客户目标价格
 				
 	
 	SET NOCOUNT ON    
     
-    SET		@X_ADD=0 
-    SET		@M_MESSAGE=''       
-    SET		@FMapNumber='-' 
-    SET		@FMapName='-' 
-    SET		@FPrice =0 
-    SET		@FPrice_bj=0 
-    SET		@FPrice_xj=0
-	set     @fnotefromcomply=''
-	set     @fsaledqtybymodel=0
-    set     @fsaledqtybycust=0
-    set     @fUncountRateQulity=0
-  	set     @fUncountRateReturn=0
-    set     @fqutoeExchRate =0
+    SET	@X_ADD=0 
+    SET	@M_MESSAGE=''       
+    SET	@FMapNumber='-' 
+    SET	@FMapName='-' 
+    SET	@FPrice =0 
+    SET	@FPrice_bj=0 
+    SET	@FPrice_xj=0
+	set @fnotefromcomply=''
+	set @fsaledqtybymodel=0
+    set @fsaledqtybycust=0
+    set @fUncountRateQulity=0
+  	set @fUncountRateReturn=0
+    set @fqutoeExchRate =0
+    set @isSubAssy=0
    
 	DECLARE seu_cur CURSOR
 	FOR
@@ -112,16 +130,29 @@ BEGIN
 			 ,B.fUncountRateQulity ,B.fUncountRateReturn
 			 ,b.fqutoeExchRate
 			 ,b.fdate
+			 ,(case when left(c.fnumber,5) like '01.09' then 1
+			   when left(c.fnumber,5) like '01.10' then 1
+			   when left(c.fnumber,5) like '01.11' then 1
+			   when left(c.fnumber,5) like '01.40' then 1
+			   else 0 end) as isSubASSY
+			  --,fcheckbox,facceptNowPrice
+			  ,FAceptCstGoaPrice ,FKeepNowPrice,FpricByCustom
 		 FROM INSERTED a
 		 INNER JOIN PORFQ b on a.FInterID = b.FInterID
+		 join t_icitem c on a.fitemid=c.fitemid
 		  	    
 	OPEN seu_cur	    
 	FETCH NEXT FROM seu_cur into @FInterID ,@FDetailID, @FEntryID, @FItemID, @FAuxQty
 	, @FAuxPrice, @FDescount, @FCess, @FCurrencyID, @FCustID, @FPriceType
-	,@fUncountRateQulity ,@fUncountRateReturn,@fqutoeExchRate,@FBillMakeDate 
-	
+	,@fUncountRateQulity ,@fUncountRateReturn,@fqutoeExchRate,@FBillMakeDate ,@isSubAssy
+	,@acceptCustPrice,@remainNowPrice,@FpricByCustom
 	WHILE @@FETCH_STATUS=0    
 	BEGIN
+		if (@acceptCustPrice =1 and @remainNowPrice = 1) 
+		begin
+		RAISERROR(N'不能同时选择“接受客户目标价”和“现在执行价格”',18,1)
+		ROLLBACK TRANSACTION	
+		end
 		--RAISERROR(N'run here',18,1)
 		EXEC [dbo].[getModelHistSaleQty]  @FItemID,@fsaledqtybymodel output
 		EXEC [dbo].[getHstQtyCustAndModel]  @FItemID ,@FCustID ,@fsaledqtybycust output
@@ -155,40 +186,14 @@ BEGIN
 		END
 		----------   吴总要求 END 2015-09-17
 		
-		--区域限制  判断这个客户的区域是否是专用客户区域内的，且是在有效期内的，若是，则报错，不允许保存
-	--	IF @FItemPriceType =40560 AND @FRegionID1=@FRegionID2  
-	--	  and convert(char(8),GETDATE(),112) between convert(char(8),@FDateFrom1,112) 
-	-- and CONVERT(char(8),@FDateEnd1,112)
-	--	  and @FCustID2<>@FCustID
-		--BEGIN
-	--		SET @X_ADD=2
-	--	END
-		--ELSE 
-		--IF @FItemPriceType =40561 and convert(char(8),GETDATE(),112) between convert(char(8)
-		-- ,@FDateFrom1,112) and CONVERT(char(8),@FDateEnd1,112)
-		--- 价格限制的且在有效期内的 只能取公司价格体系
-	--	BEGIN			
-	--		IF EXISTS ( SELECT 1 FROM ICPrcPlyEntry WHERE FItemID =@FItemID AND FInterID=3 
-	-- AND FCuryID=@FCurrencyID)
-		--	BEGIN
-		--		SELECT @FPrice_bj=isnull(A.FPrice,0),@FPriceSystemID=A.FInterID
-		-- ,@FPrice_xj=ISNULL(B.FLowPrice,0)
-		--		  FROM ICPrcPlyEntry A
-		--		  inner join ICPrcPlyEntrySpec b on a.FInterID =b.FInterID 
-		-- and a.FRelatedID =b.FRelatedID and a.FItemID =b.FItemID 
-			--	  WHERE A.FItemID =@FItemID AND A.FInterID=3 AND A.FCuryID=@FCurrencyID
-		--	END
-		--	ELSE 
-			--BEGIN
-			--	SET @X_ADD=3  ---公司价格体系不存在
-		--	END
-	--	END 
-		--ELSE  --正常 的流程
+	
 		BEGIN 
 			--客户价格体系  	价格类型  物料代码   相符的报价
 			--客户价格体系 	存在时
 			IF EXISTS ( SELECT 1 FROM ICPrcPlyEntry WHERE FInterID=4 and FRelatedID=@FCustID 
-			and FItemID =@FItemID AND FPriceType=@FPriceType and GETDATE()<=FEndDate)
+			and FItemID =@FItemID AND FPriceType=@FPriceType --and GETDATE()<=FEndDate 
+			--盛部 失效客户价格也要 20181109 
+			)
 			BEGIN
 				SELECT @FPrice_bj=isnull(A.FPrice,0),@FPriceSystemID=A.FInterID 
 				,@FPrice_xj=ISNULL(B.FLowPrice,0)
@@ -219,24 +224,7 @@ BEGIN
 				END
 			END
 		END
-	--	--物料代码适用车型自动关联到销售报价 不存在或为'' 则没有变化
-	/*	IF EXISTS (SELECT 1 FROM t_ICItemCustom where  FItemID =@FItemID) 
-		begin
-		SELECT @fnote=(CASE WHEN f_161='' THEN '' ELSE isnull(f_161,'') END) 
-		FROM t_ICItemCustom
-		where FItemID =@FItemID  
-		IF (@fnote<>'' )   ---若客户对应物料表中的客户对应物料 不是‘-’ 则更新
-		BEGIN 
-			UPDATE PORFQEntry
-			SET FNote=@fnote
-			WHERE FDetailID=@FDetailID			
-		END
-		ELSE
-		BEGIN
-			SET		@fnote='' 
-		END
-		end	
-	*/	
+	
 	--客户对应物料代码若存在 则自动关联到销售报价 不存在或为'-' 则没有变化
 		IF EXISTS (SELECT 1 FROM ICItemMapping where FID =4 and FItemID =@FItemID 
 		and FPropertyID =1 and FCompanyID=@FCustID)
@@ -264,14 +252,7 @@ BEGIN
 			SET		@FMapNumber='-' 
 			SET		@FMapName='-' 		
 		END
-		---内贸客户 若客户以 0A.A1.%开头，则取公司/客户价格体系中的限价；其余依然取报价  2015-09-06 吴总要求 
-		--IF (SUBSTRING((SELECT FNumber FROM t_Organization where FItemID =@FCustID),1,6)
-		-- ='0A.A1.')	
-		--BEGIN
-		--	SET @FPrice =@FPrice_xj
-		--	SET @FCompanyPrice=@FCompanyPrice_xj 
-	--	END
-	--	ELSE 
+		
 		BEGIN
 			SET @FPrice =@FPrice_bj       ---20180810 公司价格体系和客户价格体系里的报价，都是含税价格
 			SET @FCompanyPrice=@FCompanyPrice_bj
@@ -306,48 +287,83 @@ BEGIN
 		and CONVERT(char(8),@FDateEnd1,112)
 		BEGIN
 			UPDATE  PORFQEntry
-			SET FPrice =@FPrice/(1+@fcess/100) 
-				,FAuxPrice=@FPrice/(1+@fcess/100) 
-			 	, FAuxPriceIncludeTax=@FPrice						--含税单价
-			 	,FTaxIncQGPrice = @FPrice/(1-@FuncountRateQulity/100)--含税单价（含质保金）
+			SET FPrice =(case @fcurrencyid when 1 then 
+					(case @isSubAssy when 1 then round(@FPrice/(1+@fcess/100),2)
+					else round(@FPrice/(1+@fcess/100),0) end)
+					else round(@FPrice/(1+@fcess/100),4) end)
+				,FAuxPrice=(case @fcurrencyid when 1 then 
+					(case @isSubAssy when 1 then round(@FPrice/(1+@fcess/100),2)
+					else round(@FPrice/(1+@fcess/100),0) end)
+					else round(@FPrice/(1+@fcess/100),4) end)
+			 	,FAuxPriceIncludeTax=@FPrice							--含税单价(扣除质保金）
+			 	,FTaxIncQGPrice = (case @fcurrencyid when 1 then 
+			 		(case @isSubAssy when 1 then round(@FPrice/(1-@FuncountRateQulity/100),2)
+					else round(@FPrice/(1-@FuncountRateQulity/100),0) end)
+					else round(@FPrice/(1-@FuncountRateQulity/100),2) end)	--含税单价（含质保金）
 			  	, FPriceSystemID=@FPriceSystemID			--标注报价取得是公司价格
 			  												--体系还是客户价格体系
 			  	, FCompanyPrice=@FCompanyPrice				--公司单价 吴总参考使用 对应公司报价/限价 
 			  												--与客户价格到底差多少
-				
-				--, FDescount=0													--折扣率 清零
-			  	--, FDiscountAmt=@FPrice*FAuxQty*(1+FCess/100)* 0/100			--折扣额 清零
-			  	--, FAuxTaxPriceDiscount=@FPrice*(1+FCess/100)*(1-0/100)		--实际含税单价
-			  	--, FTaxAmount=@FPrice*FAuxQty*FCess/100*(1-0/100)				--税额	
-			  	--, FAmountIncludeTax=@FPrice*FAuxQty*(1+FCess/100)*(1-0/100)	--价税合计
-			  	--, FAmount=@FPrice*FAuxQty*(1-0/100)							--金额
-			  	
-			  	, FDescount=100- 100*Fsumcost
+			  	, FDescount=(case when @acceptCustPrice = 1  then fdescount
+			  		when @remainNowPrice = 1 then 0			  	
+			  	 else (100- 100*Fsumcost
 					/(1-FrateGainByComFinalPric/100)*(1+@FCess/100)
 					/(1-@fUncountRateReturn/100)
-					/(FAuxPriceIncludeTax*@fqutoeExchRate)						--折扣率
-			  	, FDiscountAmt= (case @FCurrencyID when 1 
-			  		then round(@FPrice*FAuxQty* FDescount/100,0)
-			  		else round(@FPrice*FAuxQty* FDescount/100,2)
-			  		end)													--折扣额 
-			  	, FAuxTaxPriceDiscount=(case @FCurrencyID when 1 
-			  		 then round(@FPrice*(1-FDescount/100),0)
-			  		 else round(@FPrice*(1-FDescount/100),2)
-				  		 end)												--实际含税单价
-			  	,FauxTaxIncQGPrice = (case @FCurrencyID when 1 
-			  		 then round(@FPrice*(1-FDescount/100)
-			  		 /(1-@FuncountRateQulity/100),0)
+					/(FAuxPriceIncludeTax*@fqutoeExchRate)) end)						--折扣率
+			  	, FDiscountAmt= (case when @acceptCustPrice = 1 then fdiscountamt
+			  		when @remainNowPrice = 1 then 0			  	
+			  		else (case @FCurrencyID when 1 
+			  		then (case @issubassy when 1 then round(@FPrice*FAuxQty*FDescount/100,2) 
+			  		else round(@FPrice*FAuxQty*FDescount/100,0) end)
+			  		else round(@FPrice*FAuxQty*FDescount/100,4)
+			  		end)	 end)												--折扣额 
+				, FCustGoalUninclQGPric=(case @FCurrencyID 						--客户含税目标价格（扣除质保金）
+									when 1 then round(@FpricByCustom*(1-@FuncountRateQulity/100),2)
+									else round(@FpricByCustom*(1-@FuncountRateQulity/100),4) end)   
+			  	/* 
+			  	 * 美元 扣除质保金 四位小数
+			  	 * 人民币 零部件 两位小数，其它 零位，不需要考虑是否扣除质保金
+			  	 */
+			  	, FAuxTaxPriceDiscount=(case 
+			  		when @acceptCustPrice = 1 then FCustGoalUninclQGPric
+			  		when @remainNowPrice = 1  then @FPrice
+			  	    else (case @FCurrencyID 
+			  	    	when 1 then (case @issubassy when 1 then round(@FPrice*(1-FDescount/100),2) 
+			  		 				else round(@FPrice*(1-FDescount/100),0) end)
+			  		 	else 
+			  		 	round(round(@FPrice*(1-FDescount/100)/(1-@FuncountRateQulity/100),2)
+			  		 			*(1-@FuncountRateQulity/100),4)
+				  		 end)		
+				  	end)										--实际含税单价(扣除质保金）
+			  	 /* 
+			  	 * 含质保金 两位小数
+			  	 * 人民币 零部件 两位小数，其它 零位，不需要考虑是否扣除质保金
+			  	 */
+				 ,FauxTaxIncQGPrice = (case when @acceptCustPrice = 1 then @FpricByCustom 
+			  		when @remainNowPrice = 1 then FTaxIncQGPrice
+			  	  else (case @FCurrencyID when 1 
+			  		 then (case @issubassy when 1 then round(@FPrice*(1-FDescount/100)
+			  		 /(1-@FuncountRateQulity/100),2) 
+			  		 else round(@FPrice*(1-FDescount/100)
+			  		 /(1-@FuncountRateQulity/100),0) end) 
 			  		 else round(@FPrice*(1-FDescount/100)
 			  		 /(1-@FuncountRateQulity/100),2)
-				  		 end)											--实际含税单价（含质保金）
-			  	, FTaxAmount=@FPrice/(1+@fcess/100)*FAuxQty*@FCess/100						--税额	
-			  	, FAmount=@FPrice/(1+@fcess/100)*FAuxQty									--金额
-			  	, FAmountIncludeTax=(case @FCurrencyID when 1 
-			  		 then round(@FPrice*FAuxQty*(1-FDescount/100),0)
-			  		 else round(@FPrice*FAuxQty*(1-FDescount/100),2)
-			  		 end)       												--价税合计
-			  	--,FNote=@FNote
-				
+				  		 end)				end)							--实际含税单价（含质保金）
+			  	, FTaxAmount=(case @fcurrencyid when 1 then 
+			  	   (case @issubassy when 1 then round(@FPrice/(1+@fcess/100)*FAuxQty*@FCess/100,2)
+			  	   else round(@FPrice/(1+@fcess/100)*FAuxQty*@FCess/100,0) end)
+			  	   else round(@FPrice/(1+@fcess/100)*FAuxQty*@FCess/100,4) end)	--税额	
+			  	, FAmount=(case @fcurrencyid when 1 then 
+			  	  (case @issubassy when 1 then round(@FPrice/(1+@fcess/100)*FAuxQty,2) 
+			  	  else round(@FPrice/(1+@fcess/100)*FAuxQty,0) end ) 
+			  	  else round(@FPrice/(1+@fcess/100)*FAuxQty,4) end)				--金额
+			  	, FAmountIncludeTax=(case when @acceptCustPrice = 1 then @FpricByCustom
+			  		 when @remainNowPrice = 1 then @FPrice
+			  			else (case @FCurrencyID when 1 
+			  		 then (case @issubassy when 1 then round(@FPrice*FAuxQty*(1-FDescount/100),2)
+			  		  else round(@FPrice*FAuxQty*(1-FDescount/100),0) end)
+			  		 else round(@FPrice*FAuxQty*(1-FDescount/100),4) end) 
+			  		 end)									--价税合计				  	
 			  	, Fnotefromcomply = @fnotefromcomply		--公司价格体系备注
 			  	, fsaledqtybymodel = @fsaledqtybymodel		--型号历史销售数量
 				, Fsaledqtybycust=@fsaledqtybycust   		--客户历史销售数量  
@@ -363,69 +379,88 @@ BEGIN
 					/(FAuxPriceIncludeTax*@fqutoeExchRate
 					*(1-@fUncountRateReturn/100)
 					) 											--利润率%
-				, FGainByCustom=(case FpricByCustom when 0 then 0 else 
-					FpricByCustom*@fqutoeExchRate
+				,FGainByCustom=(case @FpricByCustom when 0 then 0 else 
+					@FpricByCustom*@fqutoeExchRate
 					*(1-@fUncountRateReturn/100)
 					*(1-@fUncountRateQulity/100 )/(1+@FCess/100)
 					-Fsumcost end)			--客户目标价利润额
-				, FrateByCustom=100*(case FpricByCustom when 0 then 0 else 
-					(1- Fsumcost*(1+@FCess/100)/(FpricByCustom*@fqutoeExchRate
+				, FrateByCustom=100*(case @FpricByCustom when 0 then 0 else 
+					(1- Fsumcost*(1+@FCess/100)/(@FpricByCustom*@fqutoeExchRate
 					*(1-@fUncountRateReturn/100)
 					*(1-@fUncountRateQulity/100 ))) end)	 --客户目标价利率%
-				/*
-				, fenddate=(case @FCurrencyID when 1 
-					then dateadd(ss,-1,dateadd(qq,datediff(qq,-1,@FBillMakeDate),0))	
-					else										
-					dateadd(ss,-1,DATEADD(yy, DATEDIFF(yy,0,getdate())+1, 0))
-					end)--国内 ，有效期为本季度最后一天  --国外为本年最后一天   
-				 */ 
+				
 				
 			WHERE FDetailID=@FDetailID
 		END
 		ELSE
 		BEGIN
 			UPDATE  PORFQEntry
-			SET FPrice =@FPrice/(1+@fcess/100)
-				,FAuxPrice=@FPrice/(1+@fcess/100) 
-			  	, FAuxPriceIncludeTax=@FPrice							--含税单价
-			  	,FTaxIncQGPrice = @FPrice/(1-@FuncountRateQulity/100)--含税单价（含质保金）
-			  	, FPriceSystemID=@FPriceSystemID			--标注报价取得是公司价格体系还是客户价格体系
-			  	, FCompanyPrice=@FCompanyPrice --公司单价 吴总参考使用 对应公司报价/限价 与客户价格到底差多少
-			  	
-				
-				--, FDescount=0													--折扣率 清零
-			  	--, FDiscountAmt=@FPrice*FAuxQty*(1+FCess/100)* 0/100			--折扣额 清零
-			  	--, FAuxTaxPriceDiscount=@FPrice*(1+FCess/100)*(1-0/100)		--实际含税单价
-			  	--, FTaxAmount=@FPrice*FAuxQty*FCess/100*(1-0/100)				--税额	
-			  	--, FAmountIncludeTax=@FPrice*FAuxQty*(1+FCess/100)*(1-0/100)	--价税合计
-			  	--, FAmount=@FPrice*FAuxQty*(1-0/100)							--金额
-			  	
-			  	, FDescount=100- 100*Fsumcost
+			SET FPrice =(case @fcurrencyid when 1 then 
+					(case @isSubAssy when 1 then round(@FPrice/(1+@fcess/100),2)
+					else round(@FPrice/(1+@fcess/100),0) end)
+					else round(@FPrice/(1+@fcess/100),4) end)
+				,FAuxPrice=(case @fcurrencyid when 1 then 
+					(case @isSubAssy when 1 then round(@FPrice/(1+@fcess/100),2)
+					else round(@FPrice/(1+@fcess/100),0) end)
+					else round(@FPrice/(1+@fcess/100),4) end)
+			 	,FAuxPriceIncludeTax=@FPrice							--含税单价(扣除质保金）
+			 	,FTaxIncQGPrice = (case @fcurrencyid when 1 then 
+			 		(case @isSubAssy when 1 then round(@FPrice/(1-@FuncountRateQulity/100),2)
+					else round(@FPrice/(1-@FuncountRateQulity/100),0) end)
+					else round(@FPrice/(1-@FuncountRateQulity/100),2) end)	--含税单价（含质保金）
+			  	, FPriceSystemID=@FPriceSystemID			--标注报价取得是公司价格
+			  												--体系还是客户价格体系
+			  	, FCompanyPrice=@FCompanyPrice				--公司单价 吴总参考使用 对应公司报价/限价 
+			  												--与客户价格到底差多少
+			    , FDescount=(case when @acceptCustPrice = 1  then fdescount
+			  		when @remainNowPrice = 1 then 0			  	
+			  	 else (100- 100*Fsumcost
 					/(1-FrateGainByComFinalPric/100)*(1+@FCess/100)
 					/(1-@fUncountRateReturn/100)
-					/(FAuxPriceIncludeTax*@fqutoeExchRate)						--折扣率
-			  	, FDiscountAmt= (case @FCurrencyID when 1 
-			  		then round(@FPrice*FAuxQty* FDescount/100,0)
-			  		else round(@FPrice*FAuxQty* FDescount/100,2)
-			  		end)													--折扣额 
-			  	, FAuxTaxPriceDiscount=(case @FCurrencyID when 1 
-			  		 then round(@FPrice*(1-FDescount/100),0)
-			  		 else round(@FPrice*(1-FDescount/100),2)
-				  		 end)													--实际含税单价
-			  	,FauxTaxIncQGPrice = (case @FCurrencyID when 1 
-			  		 then round(@FPrice*(1-FDescount/100)
-			  		 /(1-@FuncountRateQulity/100),0)
+					/(FAuxPriceIncludeTax*@fqutoeExchRate)) end)						--折扣率
+				, FCustGoalUninclQGPric=(case @FCurrencyID 						--客户含税目标价格（扣除质保金）
+									when 1 then round(@FpricByCustom*(1-@FuncountRateQulity/100),2)
+									else round(@FpricByCustom*(1-@FuncountRateQulity/100),4) end) 
+			  	, FDiscountAmt= (case when @acceptCustPrice = 1 then fdiscountamt
+			  		when @remainNowPrice = 1 then 0			  	
+			  		else (case @FCurrencyID when 1 
+			  		then (case @issubassy when 1 then round(@FPrice*FAuxQty*FDescount/100,2) 
+			  		else round(@FPrice*FAuxQty*FDescount/100,0) end)
+			  		else round(@FPrice*FAuxQty*FDescount/100,4)
+			  		end)	 end)												--折扣额 
+			    , FAuxTaxPriceDiscount=(case when @acceptCustPrice = 1 then FCustGoalUninclQGPric
+			  		when @remainNowPrice = 1 then @FPrice			  	
+			  	    else (case @FCurrencyID when 1 
+			  		 then (case @issubassy when 1 then round(@FPrice*(1-FDescount/100),2) 
+			  		 else round(@FPrice*(1-FDescount/100),0) end)
+			  		 else round(round(@FPrice*(1-FDescount/100)
+			  		 /(1-@FuncountRateQulity/100),2)*(1-@FuncountRateQulity/100),4)
+				  		 end)		end)										--实际含税单价(扣除质保金）
+			  	,FauxTaxIncQGPrice = (case when @acceptCustPrice = 1 then  @FpricByCustom
+			  		when @remainNowPrice = 1 then FTaxIncQGPrice
+			  	  else (case @FCurrencyID when 1 
+			  		 then (case @issubassy when 1 then round(@FPrice*(1-FDescount/100)
+			  		 /(1-@FuncountRateQulity/100),2) 
+			  		 else round(@FPrice*(1-FDescount/100)
+			  		 /(1-@FuncountRateQulity/100),0) end) 
 			  		 else round(@FPrice*(1-FDescount/100)
 			  		 /(1-@FuncountRateQulity/100),2)
-				  		 end)					    					--实际含税单价（含质保金）
-			  	, FTaxAmount=@FPrice/(1+@fcess/100)*FAuxQty*@FCess/100							--税额
-			  	, FAmount=@FPrice/(1+@fcess/100)*FAuxQty										--金额	
-			  	, FAmountIncludeTax=(case @FCurrencyID when 1 
-			  		 then round(@FPrice*FAuxQty*(1-FDescount/100),0)
-			  		 else round(@FPrice*FAuxQty*(1-FDescount/100),2)
-			  		 end)       												--价税合计
-			  	--,FNote=@FNote
-				
+				  		 end)				end)							--实际含税单价（含质保金）
+			  	, FTaxAmount=(case @fcurrencyid when 1 then 
+			  	   (case @issubassy when 1 then round(@FPrice/(1+@fcess/100)*FAuxQty*@FCess/100,2)
+			  	   else round(@FPrice/(1+@fcess/100)*FAuxQty*@FCess/100,0) end)
+			  	   else round(@FPrice/(1+@fcess/100)*FAuxQty*@FCess/100,4) end)	--税额	
+			  	, FAmount=(case @fcurrencyid when 1 then 
+			  	  (case @issubassy when 1 then round(@FPrice/(1+@fcess/100)*FAuxQty,2) 
+			  	  else round(@FPrice/(1+@fcess/100)*FAuxQty,0) end ) 
+			  	  else round(@FPrice/(1+@fcess/100)*FAuxQty,4) end)				--金额
+			  	, FAmountIncludeTax=(case when @acceptCustPrice = 1 then @FpricByCustom
+			  		 when @remainNowPrice = 1 then @FPrice
+			  			else (case @FCurrencyID when 1 
+			  		 then (case @issubassy when 1 then round(@FPrice*FAuxQty*(1-FDescount/100),2)
+			  		  else round(@FPrice*FAuxQty*(1-FDescount/100),0) end)
+			  		 else round(@FPrice*FAuxQty*(1-FDescount/100),4) end) 
+			  		 end)									--价税合计				  	
 			  	, Fnotefromcomply = @fnotefromcomply		--公司价格体系备注
 			  	, fsaledqtybymodel = @fsaledqtybymodel		--型号历史销售数量
 				, Fsaledqtybycust=@fsaledqtybycust   		--客户历史销售数量  
@@ -441,43 +476,28 @@ BEGIN
 					/(FAuxPriceIncludeTax*@fqutoeExchRate
 					*(1-@fUncountRateReturn/100)
 					) 											--利润率%
-				, FGainByCustom=(case FpricByCustom when 0 then 0 else 
-					FpricByCustom*@fqutoeExchRate
+				, FGainByCustom=(case @FpricByCustom when 0 then 0 else 
+					@FpricByCustom*@fqutoeExchRate
 					*(1-@fUncountRateReturn/100)
 					*(1-@fUncountRateQulity/100 )/(1+@FCess/100)
-					-Fsumcost end)								--客户目标价利润额
-				, FrateByCustom=100*(case FpricByCustom when 0 then 0 else 
-					(1- Fsumcost*(1+@FCess/100)/(FpricByCustom*@fqutoeExchRate
+					-Fsumcost end)			--客户目标价利润额
+				, FrateByCustom=100*(case @FpricByCustom when 0 then 0 else 
+					(1- Fsumcost*(1+@FCess/100)/(@FpricByCustom*@fqutoeExchRate
 					*(1-@fUncountRateReturn/100)
-					*(1-@fUncountRateQulity/100 ))) end)	 	--客户目标价利率%
-				/*
-				 , fenddate=(case @FCurrencyID when 1 
-					then dateadd(ss,-1,dateadd(qq,datediff(qq,-1,@FBillMakeDate),0))	
-					else										
-					dateadd(ss,-1,DATEADD(yy, DATEDIFF(yy,0,getdate())+1, 0))
-					end)--国内 ，有效期为本季度最后一天  --国外为本年最后一天  
-				* 
-				 */
-					
-			
+					*(1-@fUncountRateQulity/100 ))) end)	 --客户目标价利率%
+				
 			WHERE FDetailID=@FDetailID
 		END	
 		
 	FETCH NEXT FROM seu_cur into @FInterID ,@FDetailID, @FEntryID, @FItemID
 	              , @FAuxQty, @FAuxPrice, @FDescount, @FCess, @FCurrencyID, @FCustID
 	              , @FPriceType,@fUncountRateQulity,@fUncountRateReturn,@fqutoeExchRate
-	              ,@FBillMakeDate
+	              ,@FBillMakeDate,@isSubAssy,@acceptCustPrice,@remainNowPrice,@FpricByCustom 
 	END
 	CLOSE seu_cur
 	DEALLOCATE seu_cur    
 	    
-	/*IF @X_ADD>0
-	BEGIN
-		SET @M_MESSAGE=@M_MESSAGE+ ' 客户/公司价格体系不存在!'
-		RAISERROR(@M_MESSAGE,18,18)
-		ROLLBACK TRANSACTION
-	END
-	*/
+	
 	----系统自己带的程序
     
     UPDATE E
